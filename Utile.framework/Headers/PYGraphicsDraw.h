@@ -53,6 +53,12 @@
  y:反转位置 :bounds.size.height
  */
 +(CGSize) drawTextWithContext:(nullable CGContextRef) context attribute:(nonnull NSMutableAttributedString*) attribute rect:(CGRect) rect y:(CGFloat) y scaleFlag:(BOOL) scaleFlag;
+/**
+ 画文本
+ rect:位置和区域大小
+ y:反转位置 :bounds.size.height
+ */
++(CGSize) drawTextWithContext:(nullable CGContextRef) context attribute:(nonnull NSMutableAttributedString*) attribute rects:(CGRect * _Nonnull) rects lenghtRect:(NSUInteger) lengthRect y:(CGFloat) y scaleFlag:(BOOL) scaleFlag;
 
 /**
  准备画布

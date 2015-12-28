@@ -7,11 +7,10 @@
 //
 
 #import "ViewController.h"
-#import "UIImage+ImageEffects.h"
-#import <Utile/UIView+Expand.h>
+#import <Utile/Utile.Framework.h>
 
 @interface ViewController ()
-@property (weak, nonatomic) IBOutlet UIImageView *imageVIew;
+@property (strong, nonatomic) PYFrostedEffectView *forview;
 
 @end
 
@@ -19,12 +18,28 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.imageVIew.backgroundColor = [UIColor whiteColor];
-    self.imageVIew.image = [self.imageVIew.image applyExtraLightEffect];
-    // Do any additional setup after loading the view, typically from a nib.
+    // Do any additional setup after loading the view, typically from a nib
+    self.forview = [[PYFrostedEffectView alloc] initWithFrame:CGRectMake(0, 300, 320, 320)];
+//    [self.view addSubview:self.forview];
+//    [self.forview refreshForstedEffect];
+//    
+//    @weakify(self);
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        @strongify(self);
+//        @weakify(self);
+//        __block NSUInteger index = 0;
+//        while (true) {
+//            index += 1;
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                @strongify(self)
+//                [self.forview refreshForstedEffect];
+//            });
+//            [NSThread sleepForTimeInterval:2];
+//        }
+//    });
+    
 }
 -(void) viewDidAppear:(BOOL)animated{
-    [self.view drawView];
 }
 
 - (void)didReceiveMemoryWarning {

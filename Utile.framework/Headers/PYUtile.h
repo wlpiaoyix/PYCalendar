@@ -15,8 +15,9 @@
 #ifndef IOS8_OR_LATER
 #define IOS8_OR_LATER (!(NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0))
 #endif
+
 #ifndef IOS9_OR_LATER
-#define IOS9_OR_LATER (!(NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_8_4))
+#define IOS9_OR_LATER ((NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_4))
 #endif
 
 #ifndef RGB

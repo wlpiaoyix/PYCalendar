@@ -10,9 +10,8 @@
 #import "PYCalendarTools.h"
 #import "PYCalendarGraphicsTools.h"
 #import "PYCalendarTouchTools.h"
+#import <Utile/PYFrostedEffectView.h>
 #import "NSDate+Lunar.h"
-#import "UIImage+ImageEffects.h"
-//#import <Utile/UIView+Expand.h>
 #import <Utile/UIView+Expand.h>
 #import <Utile/EXTScope.h>
 #import <Utile/PYGraphicsThumb.h>
@@ -41,7 +40,7 @@ PYDate PYCalendarDateMin;
 
 @property (nonatomic, strong) PYCalendarTouchTools *touchTools;
 
-@property (nonatomic, strong) UIImageView *visualEfView;
+@property (nonatomic, strong) PYFrostedEffectView *effectView;
 
 
 @end
@@ -71,11 +70,11 @@ PYDate PYCalendarDateMin;
     self.calendarShowType = NSCalendarUnitMonth;
     self.viewSelected = [PYCalendarSelectedView new];
     self.viewSelected.alpha = 0;
-    self.viewSelected.frame = CGRectNull;
+//    self.viewSelected.frame = CGRectNull;
     
     self.viewAlert = [PYCalendarSelectedView new];
     self.viewAlert.alpha = 0;
-    self.viewAlert.frame = CGRectNull;
+//    self.viewAlert.frame = CGRectNull;
     
     [self setAttributes:@{
                           PYCalendarFontDay : [UIFont systemFontOfSize:14],
@@ -96,19 +95,13 @@ PYDate PYCalendarDateMin;
                           }];
     
     self.dateShow = [NSDate date];
-    
-    if (self.visualEfView) {
-        [self.visualEfView removeFromSuperview];
-    }
-    self.visualEfView = [UIImageView new];
-    [self addSubview:self.visualEfView];
+    self.effectView = [PYFrostedEffectView new];
     
     @weakify(self);
     self.gtCalendar = [PYGraphicsThumb graphicsThumbWithView:self block:^(CGContextRef ctx, id userInfo) {
         @strongify(self);
         [PYGraphicsDraw drawTextWithContext:ctx attribute:[NSMutableAttributedString new] rect:self.bounds y:self.bounds.size.height scaleFlag:YES];
         [PYCalendarGraphicsTools drawCalendarWithContext:ctx size:self.frameSize dateShow:self.dateShow dateMin:self.dateMin dateMax:self.dateMax styleContext:self.styleContext];
-        self.visualEfView.frame = CGRectMake(0, 0, self.frameWidth, self.frameHeight);
     }];
     self.gtStyle = [PYGraphicsThumb graphicsThumbWithView:self block:^(CGContextRef ctx, id userInfo) {
         @strongify(self);
@@ -140,6 +133,7 @@ PYDate PYCalendarDateMin;
     [self.gtCalendar executDisplay:nil];
     self.dateSelecteds = self.dateSelecteds;
     self.dateSelected = self.dateSelected;
+    [self.effectView removeFromSuperview];
 }
 -(void) setDateSelected:(NSDate *)dateSelected{
     
@@ -387,7 +381,6 @@ PYDate PYCalendarDateMin;
                 @strongify(self);
                 [self.gtPainter executDisplay:nil];
             });
-            
         }];
         
     }
@@ -418,7 +411,15 @@ PYDate PYCalendarDateMin;
     @finally {
         [self.touchTools synsetTouchData:touchData];
         if ([self.touchTools isForeTouch:&touchData]) {
-//            self.visualEfView.alpha = touchData.currentForce / touchData.maxForce;
+            self.effectView.frame = CGRectMake(0, 0, self.frameWidth, self.frameHeight);
+            [self.effectView removeFromSuperview];
+            [self addSubview:self.effectView];
+            CGFloat value = touchData.currentForce / touchData.maxForce;
+            if (value > 0.95) {
+                value = 0.95;
+            }
+            self.effectView.effectValue = value * value * value * value;
+            [self.effectView refreshForstedEffect];
         }
     }
 }
@@ -454,11 +455,16 @@ PYDate PYCalendarDateMin;
         if (!self.touchTools.touchData.isEnd) {
             [super touchesEnded:touches withEvent:event];
         }
-//        if (![self.touchTools isForeTouch:&touchData]) {
-//            self.visualEfView.alpha = 0;
-//        }else{
-//            self.visualEfView.alpha = touchData.force / touchData.maxForce;
-//        }
+        [self.effectView removeFromSuperview];
+        if ([self.touchTools isForeTouch:&touchData]) {
+            CGFloat value = touchData.force / touchData.maxForce;
+            if (value > 0.7) {
+                value = 0.7;
+            }
+            self.effectView.effectValue = value * value * value * value;
+            [self.effectView refreshForstedEffect];
+            [self addSubview:self.effectView];
+        }
     }
 }
 -(void) setDateMin:(NSDate *)dateMin{
