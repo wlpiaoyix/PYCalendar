@@ -50,7 +50,7 @@ UIColor *PYCalendarGradientColor3;
         x += rect.size.width;
     }
 }
-+(void) drawSpeciallyWithContext:(nonnull CGContextRef) context text:(NSString * _Nonnull) text font:(UIFont * _Nonnull) font color:(UIColor * _Nonnull) color absRect:(CGRect) absRect y:(CGFloat) y {
++(void) drawSpeciallyWithContext:(nonnull CGContextRef) context text:(nonnull NSString *) text font:(nonnull UIFont *) font color:(UIColor * _Nonnull) color absRect:(CGRect) absRect y:(CGFloat) y {
     
     CGFloat borderWith = 1;
     CGFloat offsetValue = 0;
@@ -124,7 +124,7 @@ UIColor *PYCalendarGradientColor3;
 }
 
 
-+(void) drawCalendarWithContext:(nonnull CGContextRef) context size:(CGSize) size dateShow:(NSDate *  _Nonnull) dateShow dateMin:(NSDate * _Nonnull) dateMin dateMax:(NSDate * _Nonnull) dateMax styleContext:(PYCalendarStyleContext * _Nonnull) styleContext{
++(void) drawCalendarWithContext:(nonnull CGContextRef) context size:(CGSize) size dateShow:(NSDate *  _Nonnull) dateShow dateMin:(nonnull NSDate *) dateMin dateMax:(nonnull NSDate *) dateMax styleContext:(nonnull PYCalendarStyleContext *) styleContext{
     CGFloat weekEndInfoHeight = 0;
     NSUInteger numWeekends = 0;
     CGFloat dayInfoHeight= 0;
@@ -232,7 +232,7 @@ UIColor *PYCalendarGradientColor3;
     } date:dateShow dateMin:dateMin dateMax:dateMax];
 }
 
-+(void) drawStyleWithContext:(nonnull CGContextRef) context size:(CGSize) size dateShow:(NSDate *  _Nonnull) dateShow styleContext:(PYCalendarStyleContext * _Nonnull) styleContext{
++(void) drawStyleWithContext:(nonnull CGContextRef) context size:(CGSize) size dateShow:(NSDate *  _Nonnull) dateShow styleContext:(nonnull PYCalendarStyleContext *) styleContext{
     CGFloat weekEndInfoHeight = 0;
     NSUInteger numWeekends = 0;
     CGFloat dayInfoHeight= 0;

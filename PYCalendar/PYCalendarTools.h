@@ -17,8 +17,8 @@ extern const char * _Nonnull LunarCalendarMonth[12];
 extern const char * _Nonnull LunarCalendarRunMonth[12];
 
 @interface PYCalendarTools : NSObject
-+(PYPoint) parsetToPointWithDate:(NSDate * _Nonnull) _date_ dateShow:(NSDate * _Nonnull) dateShow isStart:(BOOL) isStart;
-+(NSDate * _Nonnull) parsetToDateWithPoint:(PYPoint) point dateShow:(NSDate * _Nonnull) dateShow;
++(PYPoint) parsetToPointWithDate:(nonnull NSDate *) _date_ dateShow:(nonnull NSDate *) dateShow isStart:(BOOL) isStart;
++(nonnull NSDate *) parsetToDateWithPoint:(PYPoint) point dateShow:(nonnull NSDate *) dateShow;
 +(void) getCalendarInfoWithPerNumDaysPointer:(NSInteger * _Nullable) perNumDaysPointer curNumDaysPointer:(NSInteger * _Nullable) curNumDaysPointer nextNumDaysPointer:(NSInteger * _Nullable) nextNumDaysPointer date:(nonnull const NSDate*) date;
 +(void) blockIterater:(nonnull void (^) (NSInteger row, NSInteger align, PYDate date, PYDate dateMin, PYDate dateMax)) blockIterater date:(nonnull NSDate*) date dateMin:(nonnull NSDate *) dateMin dateMax:(nonnull NSDate *) dateMax;
 /**
@@ -36,15 +36,15 @@ extern const char * _Nonnull LunarCalendarRunMonth[12];
 /**
  公历日期朔日
  */
-+(BOOL) getTotalDaysPointer:(NSInteger * _Nonnull) totalDaysPointer year:(NSInteger) year month:(NSInteger) month;
++(BOOL) getTotalDaysPointer:(nonnull NSInteger *) totalDaysPointer year:(NSInteger) year month:(NSInteger) month;
 /**
  农历日期朔日
  */
-+(BOOL) getTotalLunarDaysPointer:(NSInteger * _Nonnull) totalLunarDaysPointer year:(NSInteger) year month:(NSInteger) month;
++(BOOL) getTotalLunarDaysPointer:(nonnull NSInteger *) totalLunarDaysPointer year:(NSInteger) year month:(NSInteger) month;
 /**
  返回农历年名称
  */
-+(NSString * _Nonnull) getLunarYearNameWithYear:(NSInteger) year;
++(nonnull NSString *) getLunarYearNameWithYear:(NSInteger) year;
 /**
  返回农历年闰月 0b*[4.]0000
  */

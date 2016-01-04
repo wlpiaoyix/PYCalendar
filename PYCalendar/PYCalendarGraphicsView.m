@@ -10,13 +10,13 @@
 #import "PYCalendarTools.h"
 #import "PYCalendarGraphicsTools.h"
 #import "PYCalendarTouchTools.h"
-#import <Utile/PYFrostedEffectView.h>
 #import "NSDate+Lunar.h"
 #import <Utile/UIView+Expand.h>
 #import <Utile/EXTScope.h>
 #import <Utile/PYGraphicsThumb.h>
 #import <Utile/PYGraphicsDraw.h>
 #import <Utile/NSDate+Expand.h>
+#import <Utile/PYFrostedEffectView.h>
 #import <objc/runtime.h>
 #import <QuartzCore/QuartzCore.h>
 
@@ -38,10 +38,14 @@ PYDate PYCalendarDateMin;
 @property (nonatomic, strong) PYGraphicsThumb *gtStyle;
 @property (nonatomic, strong) PYGraphicsThumb *gtPainter;
 
+@property (nonatomic, strong) PYFrostedEffectView *feView;
+
 @property (nonatomic, strong) PYCalendarTouchTools *touchTools;
 
-@property (nonatomic, strong) PYFrostedEffectView *effectView;
+@property (nonatomic) PYPoint pointEnableStart;
+@property (nonatomic) PYPoint pointEnableEnd;
 
+@property (nonatomic, strong) id synPoint;
 
 @end
 
@@ -64,17 +68,13 @@ PYDate PYCalendarDateMin;
     return self;
 }
 -(void) initParams{
+    self.synPoint = [NSObject new];
     self.styleContext = [PYCalendarStyleContext new];
     self.touchTools = [PYCalendarTouchTools new];
     
     self.calendarShowType = NSCalendarUnitMonth;
     self.viewSelected = [PYCalendarSelectedView new];
     self.viewSelected.alpha = 0;
-//    self.viewSelected.frame = CGRectNull;
-    
-    self.viewAlert = [PYCalendarSelectedView new];
-    self.viewAlert.alpha = 0;
-//    self.viewAlert.frame = CGRectNull;
     
     [self setAttributes:@{
                           PYCalendarFontDay : [UIFont systemFontOfSize:14],
@@ -95,7 +95,8 @@ PYDate PYCalendarDateMin;
                           }];
     
     self.dateShow = [NSDate date];
-    self.effectView = [PYFrostedEffectView new];
+    
+    self.feView = [PYFrostedEffectView new];
     
     @weakify(self);
     self.gtCalendar = [PYGraphicsThumb graphicsThumbWithView:self block:^(CGContextRef ctx, id userInfo) {
@@ -122,18 +123,16 @@ PYDate PYCalendarDateMin;
     }
     _dateShow = dateShow;
     [self reloadData];
+    [self synPointEnable];
 }
 -(void) reloadData{
     [self.viewSelected removeFromSuperview];
     [self addSubview:self.viewSelected];
-    [self.viewAlert removeFromSuperview];
-    [self addSubview:self.viewAlert];
     [self.touchTools clearData];
     [self.gtStyle executDisplay:nil];
     [self.gtCalendar executDisplay:nil];
     self.dateSelecteds = self.dateSelecteds;
     self.dateSelected = self.dateSelected;
-    [self.effectView removeFromSuperview];
 }
 -(void) setDateSelected:(NSDate *)dateSelected{
     
@@ -289,7 +288,7 @@ PYDate PYCalendarDateMin;
         pointEnd.x = [userInfo[@"x2"] integerValue];
         pointEnd.y = [userInfo[@"y2"] integerValue];
     }else{
-        PYCanlendarTouchData __touchData = self.touchTools.touchData;
+        PYCalendarTouchData __touchData = self.touchTools.touchData;
         if ([PYCalendarTouchTools isNewTouchPointer:&__touchData]) {
             return;
         }
@@ -346,12 +345,21 @@ PYDate PYCalendarDateMin;
     
 }
 -(void) touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    PYCanlendarTouchData touchData = PYCanlendarTouchDataNull();
+    PYCalendarTouchData touchData = PYCalendarTouchDataNull();
+    BOOL flag = true;
     @try {
-        [super touchesBegan:touches withEvent:event];
         
         UITouch *touch = touches.anyObject;
         if (!touch) {
+            return;
+        }
+        
+        PYPoint pointBegin = PYPointMake(0, 0);
+        [PYCalendarTouchTools toucheGetXIndexPointer:&(pointBegin.x) yIndexPointer:&(pointBegin.y) touchPoint:[touch locationInView:touch.view] sizeScan:self.frameSize dateShow:self.dateShow];
+        if (!(pointBegin.x >= self.pointEnableStart.x && pointBegin.y >= self.pointEnableStart.y)) {
+            return;
+        }
+        if (!(pointBegin.x <= self.pointEnableEnd.x && pointBegin.y <= self.pointEnableEnd.y)) {
             return;
         }
         
@@ -359,20 +367,7 @@ PYDate PYCalendarDateMin;
         if(![self.touchTools checkToucheBegan:touch touchData:&touchData pointScan1:CGPointMake(0, weekEndInfoHeight) pointScan2:CGPointMake(self.frameWidth, self.frameHeight) dateShow:self.dateShow]){
             return;
         }
-        
-        if (!self.blockSelectedDate && !self.blockSelectedDates) {
-            return;
-        }
-        
-    }
-    @finally {
-        
-        [self.touchTools synsetTouchData:touchData];
-        
-        if (!self.blockSelectedDates) {
-            return;
-        }
-        
+        flag = false;
         @weakify(self);
         [self.touchTools startLongTouchWithBlockLongTouch:^{
             @strongify(self);
@@ -382,50 +377,79 @@ PYDate PYCalendarDateMin;
                 [self.gtPainter executDisplay:nil];
             });
         }];
-        
+    }
+    @finally {
+        if (flag) {
+            [super touchesBegan:touches withEvent:event];
+        }
+        [self.touchTools synsetTouchData:touchData];
     }
 }
 
 -(void) touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    PYCanlendarTouchData touchData = self.touchTools.touchData;
+    PYCalendarTouchData touchData = self.touchTools.touchData;
+    BOOL flag = true;
     @try {
-        if (![self.touchTools isLongTouch:&touchData]) {
-            [super touchesMoved:touches withEvent:event];
-        }
-        
         UITouch *touch = touches.anyObject;
         if (!touch) {
             return;
         }
-        
+
         CGFloat weekEndInfoHeight = self.frameHeight / 10;
-        if (![self.touchTools checkToucheMoved:touch touchData:&touchData pointScan1:CGPointMake(0, weekEndInfoHeight) pointScan2:CGPointMake(self.frameWidth, self.frameHeight) dateShow:self.dateShow]) {
+        if (![self.touchTools checkTouching:touch touchData:&touchData pointScan1:CGPointMake(0, weekEndInfoHeight) pointScan2:CGPointMake(self.frameWidth, self.frameHeight) dateShow:self.dateShow]) {
             return;
         }
         
         if ([self.touchTools isLongTouch:&touchData]) {
-            [self.touchTools synsetTouchData:touchData];
-            [self.gtPainter executDisplay:nil];
+            if ([PYCalendarTouchTools isTouchMoveWithTouchData:&touchData]) {
+                flag = false;
+                [self.touchTools synsetTouchData:touchData];
+                [self.gtPainter executDisplay:nil];
+            }
+        }else if ([self.touchTools isForeTouch:&touchData]) {
+            flag = false;
+            
+            BOOL flagFore = true;
+            if([self.touchTools isForeTouch1:&touchData]){
+                if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce1WithCalendar:)]) {
+                    flagFore = flagFore && [self.delegate touchForce1WithCalendar:self];
+                }
+                if (flagFore) {
+                    [self.feView removeFromSuperview];
+                    self.feView.frameSize = self.frameSize;
+                    self.feView.frameOrigin = CGPointMake(0, 0);
+                    [self addSubview:self.feView];
+                }
+            }
+            if([self.touchTools isForeTouch2:&touchData]){
+                if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce2WithCalendar:)]) {
+                    flagFore = flagFore && [self.delegate touchForce2WithCalendar:self];
+                }
+            }
+            
+            CGFloat value =  touchData.force.curForce / touchData.force.maximumPossibleForce;
+            if (flagFore) {
+                self.feView.effectValue = value;
+                [self.feView refreshForstedEffect];
+            }else{
+                [self.feView removeFromSuperview];
+            }
+            if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce:calendar:)]) {
+                [self.delegate touchForce:value calendar:self];
+            }
         }
     }
     @finally {
         [self.touchTools synsetTouchData:touchData];
-        if ([self.touchTools isForeTouch:&touchData]) {
-            self.effectView.frame = CGRectMake(0, 0, self.frameWidth, self.frameHeight);
-            [self.effectView removeFromSuperview];
-            [self addSubview:self.effectView];
-            CGFloat value = touchData.currentForce / touchData.maxForce;
-            if (value > 0.95) {
-                value = 0.95;
-            }
-            self.effectView.effectValue = value * value * value * value;
-            [self.effectView refreshForstedEffect];
+        if (flag) {
+            [super touchesMoved:touches withEvent:event];
         }
     }
 }
 
 -(void) touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    PYCanlendarTouchData touchData = self.touchTools.touchData;
+    PYCalendarTouchData touchData = self.touchTools.touchData;
+    BOOL flag = true;
     @try {
         UITouch *touch = touches.anyObject;
         if (!touch) {
@@ -436,34 +460,29 @@ PYDate PYCalendarDateMin;
             return;
         }
         
-        if([self.touchTools isNormalTouch:&touchData] && !touchData.isMove){
-            
-            if (self.blockSelectedDate) {
-                _blockSelectedDate(self, [PYCalendarTools parsetToDateWithPoint:touchData.pointEnd dateShow:self.dateShow]);
+        if([self.touchTools isNormalTouch:&touchData]){
+            flag = false;
+            if (self.delegate
+                && [self.delegate respondsToSelector:@selector(dateSelcted:calendar:)]) {
+                [self.delegate dateSelcted:[PYCalendarTools parsetToDateWithPoint:touchData.pointEnd dateShow:self.dateShow] calendar:self];
             }
         }else if ([self.touchTools isLongTouch:&touchData]){
-            if (self.blockSelectedDates) {
+            flag = false;
+            if (self.delegate
+                && [self.delegate respondsToSelector:@selector(dateSelcteds:calendar:)]) {
                 [self.touchTools synsetTouchData:touchData];
                 NSDate *start = [PYCalendarTools parsetToDateWithPoint:self.touchTools.touchData.pointBegin dateShow:self.dateShow];
                 NSDate *end = [PYCalendarTools parsetToDateWithPoint:self.touchTools.touchData.pointEnd dateShow:self.dateShow];
-                _blockSelectedDates(self,@[start,end]);
+                [self.delegate dateSelcteds:@[start, end] calendar:self];
             }
         }
+        
     }
     @finally {
         [self.touchTools synsetTouchData:touchData];
-        if (!self.touchTools.touchData.isEnd) {
+        [self.feView removeFromSuperview];
+        if (flag) {
             [super touchesEnded:touches withEvent:event];
-        }
-        [self.effectView removeFromSuperview];
-        if ([self.touchTools isForeTouch:&touchData]) {
-            CGFloat value = touchData.force / touchData.maxForce;
-            if (value > 0.7) {
-                value = 0.7;
-            }
-            self.effectView.effectValue = value * value * value * value;
-            [self.effectView refreshForstedEffect];
-            [self addSubview:self.effectView];
         }
     }
 }
@@ -476,6 +495,7 @@ PYDate PYCalendarDateMin;
         return;
     }
     _dateMin = [dateMin setCompentsWithBinary:0b111000];
+    [self synPointEnable];
 }
 -(void) setDateMax:(NSDate *)dateMax{
     PYDate date = PYDateMake(dateMax.year, dateMax.month, dateMax.day);
@@ -486,16 +506,33 @@ PYDate PYCalendarDateMin;
         return;
     }
     _dateMax = [dateMax setCompentsWithBinary:0b111000];
+    [self synPointEnable];
+    
 }
 
 -(void) setAttributes:(NSDictionary<NSString *, id> * _Nonnull) attributes{
     [self.styleContext setAttributes:attributes];
 }
--(void) setAttributeWithKey:(NSString * _Nonnull) key value:(id _Nonnull) value{
+-(void) setAttributeWithKey:(nonnull NSString *) key value:(id _Nonnull) value{
     [self.styleContext setAttributeWithKey:key value:value];
 }
--(id _Nullable) getAttributeValueWithKey:(NSString * _Nonnull) key{
+-(id _Nullable) getAttributeValueWithKey:(nonnull NSString *) key{
     return [self.styleContext getAttributeValueWithKey:key];
+}
+
+-(void) synPointEnable{
+    @synchronized(_synPoint) {
+        if (!self.dateShow) {
+            return;
+        }
+        if (self.dateMin) {
+            [PYCalendarTouchTools checkEnablePoint:&_pointEnableStart date:_dateMin dateShow:self.dateShow];
+        }
+        if (self.dateMax) {
+            [PYCalendarTouchTools checkEnablePoint:&_pointEnableEnd date:_dateMax dateShow:self.dateShow];
+        }
+    }
+    
 }
 @end
 

@@ -216,7 +216,7 @@ const unsigned int CalendarLeapYearInfo[12] = {31,29,31,30,31,30,31,31,30,31,30,
     }
 }
 
-+(PYPoint) parsetToPointWithDate:(NSDate * _Nonnull) _date_ dateShow:(NSDate * _Nonnull) dateShow isStart:(BOOL) isStart{
++(PYPoint) parsetToPointWithDate:(nonnull NSDate *) _date_ dateShow:(nonnull NSDate *) dateShow isStart:(BOOL) isStart{
     
     NSInteger perNumDays;
     NSInteger curNumDays;
@@ -245,7 +245,7 @@ const unsigned int CalendarLeapYearInfo[12] = {31,29,31,30,31,30,31,31,30,31,30,
     return point;
 }
 
-+(NSDate * _Nonnull) parsetToDateWithPoint:(PYPoint) point dateShow:(NSDate * _Nonnull) dateShow{
++(nonnull NSDate *) parsetToDateWithPoint:(PYPoint) point dateShow:(nonnull NSDate *) dateShow{
     
     NSDate *date = dateShow;
     
@@ -454,7 +454,7 @@ const unsigned int CalendarLeapYearInfo[12] = {31,29,31,30,31,30,31,31,30,31,30,
 /**
  公历月份的总天数
  */
-+(BOOL) getTotalDaysPointer:(NSInteger * _Nonnull) totalDaysPointer year:(NSInteger) year month:(NSInteger) month{
++(BOOL) getTotalDaysPointer:(nonnull NSInteger *) totalDaysPointer year:(NSInteger) year month:(NSInteger) month{
     BOOL result =  [self ifValidDataWithYear:year month:month day:1];
     if(result == false){
         return result;
@@ -519,7 +519,7 @@ const unsigned int CalendarLeapYearInfo[12] = {31,29,31,30,31,30,31,31,30,31,30,
 /**
  返回农历年名称
  */
-+(NSString * _Nonnull) getLunarYearNameWithYear:(NSInteger) year{
++(nonnull NSString *) getLunarYearNameWithYear:(NSInteger) year{
     NSInteger suffixYear = year - 1864;
     return [NSString stringWithFormat:@"%@%@",[NSString stringWithUTF8String:LunarCalendarTiangan[suffixYear % LunarCalendarTianganLength]], [NSString stringWithUTF8String:LunarCalendarDizhi[suffixYear % LunarCalendarDizhiLength]]];
 }

@@ -88,7 +88,7 @@ NSInteger PYDatePickerWith = 220;
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component{
     return 30;
 }
--(void) setSelectedDate:(NSDate * _Nonnull) _selectedDate_{
+-(void) setSelectedDate:(nonnull NSDate *) _selectedDate_{
     [self.pikerDate reloadAllComponents];
     NSInteger yRow;
     [PYDatePikerView getRow:&yRow year:_selectedDate_.year];
@@ -98,7 +98,7 @@ NSInteger PYDatePickerWith = 220;
     [self.pikerDate selectRow:mRow inComponent:1 animated:NO];
     selectedDate = _selectedDate_;
 }
--(NSDate * _Nonnull) selectedDate{
+-(nonnull NSDate *) selectedDate{
     NSInteger year,month;
     [PYDatePikerView getYear:&year row:[self.pikerDate selectedRowInComponent:0]];
     [PYDatePikerView getMonth:&month row:[self.pikerDate selectedRowInComponent:1]];

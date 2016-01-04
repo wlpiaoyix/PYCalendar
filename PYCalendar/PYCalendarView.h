@@ -13,18 +13,18 @@
 /**
  显示的日期
  */
-@property (nonatomic, strong) NSDate * _Nonnull dateShow;
+@property (nonatomic, strong) NSDate * _Nullable dateShow;
 /**
  选择的日期
  */
-@property (nonatomic, strong) NSDate * _Nonnull dateSelected;
+@property (nonatomic, strong) NSDate * _Nullable dateSelected;
 /**
  选择的日期
  */
 @property (nonatomic, strong) NSArray<NSDate*> * _Nullable dateSelecteds;
 
-@property (nonatomic, strong) NSDate * _Nonnull dateMin;
-@property (nonatomic, strong) NSDate * _Nonnull dateMax;
+@property (nonatomic, strong) NSDate * _Nullable dateMin;
+@property (nonatomic, strong) NSDate * _Nullable dateMax;
 
 @property (nonatomic, strong) void (^ _Nullable blockSelectedDate) (PYCalendarView * _Nonnull calendarView, NSDate * _Nonnull dateSelected);
 
