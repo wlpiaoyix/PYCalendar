@@ -59,7 +59,7 @@ const NSString * _Nonnull PYCalendarColorStyleLine = @"adsewrsqedf";
     self.fontWeekEndHeight = [PYUtile getFontHeightWithSize:fontWeekEnd.pointSize fontName:fontWeekEnd.fontName];
 }
 
--(PYSolarTerm * _Nonnull) getSolarTermsWithYear:(NSInteger) year{
+-(nonnull PYSolarTerm *) getSolarTermsWithYear:(NSInteger) year{
     @synchronized(self) {
         if (solarTerm == nil || solarTerm[0].date.year != year) {
             solarTerm = pyCalendarGetSolarTerm((int)year);
@@ -68,13 +68,13 @@ const NSString * _Nonnull PYCalendarColorStyleLine = @"adsewrsqedf";
     return solarTerm;
 }
 
--(void) setAttributes:(NSDictionary<NSString *, id> * _Nonnull) attributes{
+-(void) setAttributes:(nonnull NSDictionary<NSString *, id> *) attributes{
     for (NSString *key in attributes) {
         id value = attributes[key];
         [self setAttributeWithKey:key value:value];
     }
 }
--(void) setAttributeWithKey:(NSString * _Nonnull) key value:(id _Nonnull) value{
+-(void) setAttributeWithKey:(nonnull NSString *) key value:(nonnull id) value{
     if ([key isEqualToString:(NSString*)PYCalendarFontWeekEnd]) {
         if (![value isKindOfClass:[UIFont class]]) {
             return;
@@ -168,7 +168,7 @@ const NSString * _Nonnull PYCalendarColorStyleLine = @"adsewrsqedf";
     }
     
 }
--(id _Nullable) getAttributeValueWithKey:(NSString * _Nonnull) key{
+-(nonnull id) getAttributeValueWithKey:(nonnull NSString *) key{
     if ([key isEqualToString:(NSString*)PYCalendarFontWeekEnd]) {
         return self.fontWeekEnd;
     }

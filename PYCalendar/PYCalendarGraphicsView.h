@@ -18,13 +18,17 @@
 -(void) dateSelcted:(NSDate * _Nullable) date calendar:(PYCalendarGraphicsView * _Nonnull) calendar;
 -(void) dateSelcteds:(NSArray<NSDate *> * _Nullable) dates calendar:(PYCalendarGraphicsView * _Nonnull) calendar;
 //<==
--(void) touchForce:(CGFloat) force calendar:(PYCalendarGraphicsView * _Nonnull) calendar;
--(BOOL) touchForce1WithCalendar:(PYCalendarGraphicsView * _Nonnull) calendar;
--(BOOL) touchForce2WithCalendar:(PYCalendarGraphicsView * _Nonnull) calendar;
+//==>Force touch
+-(void) touchForce:(CGFloat) force calendar:(PYCalendarGraphicsView * _Nonnull) calendar touchPoint:(CGPoint) touchPoint;
+-(BOOL) touchForce1WithCalendar:(PYCalendarGraphicsView * _Nonnull) calendar touchPoint:(CGPoint) touchPoint;
+-(BOOL) touchForce2WithCalendar:(PYCalendarGraphicsView * _Nonnull) calendar touchPoint:(CGPoint) touchPoint;
+//==>
 @end
 
 
 @interface PYCalendarGraphicsView : UIView
+
+@property (nonatomic, readonly) CGSize sizeDayText;
 
 @property (nonatomic, strong) UIView * _Nullable viewSelected;
 
@@ -50,9 +54,11 @@
 @property (nonatomic) NSDate * _Nullable dateMin;
 @property (nonatomic) NSDate * _Nullable dateMax;
 
--(void) setAttributes:(NSDictionary<NSString *, id> * _Nonnull) attributes;
--(void) setAttributeWithKey:(nonnull NSString *) key value:(id _Nonnull) value;
--(id _Nullable) getAttributeValueWithKey:(nonnull NSString *) key;
-
+-(void) setAttributes:(nonnull NSDictionary<NSString *, id> *) attributes;
+-(void) setAttributeWithKey:(nonnull NSString *) key value:(nonnull id) value;
+-(nonnull id) getAttributeValueWithKey:(nonnull NSString *) key;
+/**
+ 所有的数据必须要在reloadData之后才会更新到UI层
+ */
 -(void) reloadData;
 @end

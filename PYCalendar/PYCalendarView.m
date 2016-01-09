@@ -15,8 +15,11 @@
 #import <Utile/UIView+Expand.h>
 #import <Utile/UIImage+Expand.h>
 #import <Utile/PYGraphicsDraw.h>
+#import <Utile/PYFrostedEffectView.h>
 #import <Utile/EXTScope.h>
 #import <Dialog/Dialog.Framework.h>
+#import "PYCalendarTouchTools.h"
+#import "PYCalendarTools.h"
 #import "PYDatePikerView.h"
 
 
@@ -34,6 +37,8 @@ UIColor *PYCOPVDefaultColor2;
 @property (nonatomic, weak) PYCalendarGraphicsView *calendarView;
 @property (nonatomic, strong) NSArray<PYCalendarGraphicsView*> *calendarViews;
 @property (nonatomic) NSTimeInterval timeInterval;
+
+@property (nonatomic, strong) PYFrostedEffectView *feView;
 @end
 
 @implementation PYCalendarView
@@ -58,6 +63,7 @@ UIColor *PYCOPVDefaultColor2;
     self.viewHead = [UIView new];
     self.viewHead.backgroundColor = PYCOPVDefaultColor2;
     self.timeInterval = -1;
+    self.feView = [PYFrostedEffectView new];
     
     self.buttonPre = [PYCalendarView createButtonWithName:@"上一月"];
     self.buttonNext = [PYCalendarView createButtonWithName:@"下一月"];
@@ -101,7 +107,9 @@ UIColor *PYCOPVDefaultColor2;
     [self.viewHead addSubview:self.imageViewDown];
     
     self.dateShow = [NSDate date];
-    self.calendarView.delegate = self;
+    for (PYCalendarGraphicsView *cgv in self.calendarViews) {
+        cgv.delegate = self;
+    }
 #ifdef DEBUG
     @weakify(self);
     [self setBlockSelectedDate:^(PYCalendarView * _Nonnull calendarView,NSDate * _Nonnull dateSelected) {
@@ -110,7 +118,11 @@ UIColor *PYCOPVDefaultColor2;
     }];
     [self setBlockSelectedDates:^(PYCalendarView * _Nonnull calendarView, NSArray<NSDate *> * _Nonnull dateSelecteds) {
         @strongify(self);
-        self.dateSelecteds = dateSelecteds;
+        NSMutableArray *array = [NSMutableArray arrayWithArray:dateSelecteds];
+        if (self.dateSelecteds) {
+            [array addObjectsFromArray:self.dateSelecteds];
+        }
+        self.dateSelecteds = array;
     }];
 #endif
     
@@ -238,34 +250,10 @@ UIColor *PYCOPVDefaultColor2;
 }
 -(void) setBlockSelectedDate:(void (^)(PYCalendarView * _Nonnull calendarView,NSDate * _Nonnull dateSelected))blockSelectedDate{
     _blockSelectedDate = [blockSelectedDate copy];
-    for (PYCalendarGraphicsView *cgv in self.calendarViews) {
-        cgv.delegate = self;
-        
-    }
 }
 -(void) setBlockSelectedDates:(void (^)(PYCalendarView * _Nonnull calendarView, NSArray<NSDate *> * _Nonnull dateSelecteds))blockSelectedDates{
     _blockSelectedDates = [blockSelectedDates copy];
-    for (PYCalendarGraphicsView *cgv in self.calendarViews) {
-        cgv.delegate = self;
-    }
 }
-
--(void) dateSelcted:(NSDate * _Nullable) date calendar:(PYCalendarGraphicsView * _Nonnull) calendar{
-    if (self.blockSelectedDate) {
-        _blockSelectedDate(self,date);
-        if (date == calendar.dateSelected) {
-            if(self.hasSound)[PYUtile soundWithPath:[NSString stringWithFormat:@"%@/PYCalendarSound.bundle/click.wav",bundleDir] isShake:NO];
-        }else{
-            if(self.hasSound)[PYUtile soundWithPath:[NSString stringWithFormat:@"%@/PYCalendarSound.bundle/noclick.wav",bundleDir] isShake:NO];
-        }
-    }
-}
--(void) dateSelcteds:(NSArray<NSDate *> * _Nullable) dates calendar:(PYCalendarGraphicsView * _Nonnull) calendar{
-    if (self.blockSelectedDates) {
-        _blockSelectedDates(self, dates);
-    }
-}
-
 -(void) layoutSubviews{
     [super layoutSubviews];
     self.viewHead.frame = CGRectMake(0, 0, self.frame.size.width, 44);
@@ -287,6 +275,50 @@ UIColor *PYCOPVDefaultColor2;
     
     [self.calendarView reloadData];
 }
+
+#pragma PYCalendarGraphicsProtocol ==>
+-(void) dateSelcted:(NSDate * _Nullable) date calendar:(PYCalendarGraphicsView * _Nonnull) calendar{
+    if (self.blockSelectedDate) {
+        _blockSelectedDate(self,date);
+        if (date == calendar.dateSelected) {
+            if(self.hasSound)[PYUtile soundWithPath:[NSString stringWithFormat:@"%@/PYCalendarSound.bundle/click.wav",bundleDir] isShake:NO];
+        }else{
+            if(self.hasSound)[PYUtile soundWithPath:[NSString stringWithFormat:@"%@/PYCalendarSound.bundle/noclick.wav",bundleDir] isShake:NO];
+        }
+    }
+}
+-(void) dateSelcteds:(NSArray<NSDate *> * _Nullable) dates calendar:(PYCalendarGraphicsView * _Nonnull) calendar{
+    if (self.blockSelectedDates) {
+        _blockSelectedDates(self, dates);
+    }
+}
+-(BOOL) touchForce1WithCalendar:(PYCalendarGraphicsView *)calendar touchPoint:(CGPoint)touchPoint{
+    return true;
+}
+-(BOOL) touchForce2WithCalendar:(PYCalendarGraphicsView * _Nonnull) calendar touchPoint:(CGPoint)touchPoint{
+    self.feView.frameSize = self.frameSize;
+    self.feView.frameOrigin = CGPointMake(0, 0);
+    [self.feView removeFromSuperview];
+    [self addSubview:self.feView];
+    self.feView.effectValue = 0.5;
+    [self.feView refreshForstedEffect];
+    PYPoint point = PYPointMake(-1, -1);
+    [PYCalendarTouchTools toucheGetXIndexPointer:&point.x yIndexPointer:&point.y touchPoint:touchPoint sizeScan:self.calendarView.frameSize dateShow:self.calendarView.dateShow];
+    
+    @weakify(self);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        @strongify(self);
+        [NSThread sleepForTimeInterval:3];
+        @weakify(self);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            @strongify(self);
+            [self.feView removeFromSuperview];
+        });
+    });
+    return false;
+}
+#pragma PYCalendarGraphicsProtocol <==
+
 
 +(UILabel *) createLableDate{
     UILabel *lable = [UILabel new];

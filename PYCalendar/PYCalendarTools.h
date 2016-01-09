@@ -17,22 +17,22 @@ extern const char * _Nonnull LunarCalendarMonth[12];
 extern const char * _Nonnull LunarCalendarRunMonth[12];
 
 @interface PYCalendarTools : NSObject
-+(PYPoint) parsetToPointWithDate:(nonnull NSDate *) _date_ dateShow:(nonnull NSDate *) dateShow isStart:(BOOL) isStart;
++(BOOL) parsetToPointWithDate:(nonnull NSDate *) date dateShow:(nonnull NSDate *) dateShow isStart:(BOOL) isStart point:(nonnull PYPoint *) pointPointer;
 +(nonnull NSDate *) parsetToDateWithPoint:(PYPoint) point dateShow:(nonnull NSDate *) dateShow;
-+(void) getCalendarInfoWithPerNumDaysPointer:(NSInteger * _Nullable) perNumDaysPointer curNumDaysPointer:(NSInteger * _Nullable) curNumDaysPointer nextNumDaysPointer:(NSInteger * _Nullable) nextNumDaysPointer date:(nonnull const NSDate*) date;
++(void) getCalendarInfoWithPerNumDaysPointer:(nullable NSInteger *) perNumDaysPointer curNumDaysPointer:(nullable NSInteger *) curNumDaysPointer nextNumDaysPointer:(nullable NSInteger *) nextNumDaysPointer date:(nonnull const NSDate*) date;
 +(void) blockIterater:(nonnull void (^) (NSInteger row, NSInteger align, PYDate date, PYDate dateMin, PYDate dateMax)) blockIterater date:(nonnull NSDate*) date dateMin:(nonnull NSDate *) dateMin dateMax:(nonnull NSDate *) dateMax;
 /**
  获取年份对应的属性
  */
-+(const char * _Nullable) lunarZodiacWithYear:(NSInteger) year;
++(nullable const char *) lunarZodiacWithYear:(NSInteger) year;
 /**
  根据朔日推算对应的公历日期
  */
-+(bool) getYearPointer:(NSInteger * _Nullable) yearPointer monthPointer:(NSInteger * _Nullable) monthPointer dayPointer:(NSInteger * _Nullable) dayPointer totalLunarDays:(NSInteger) totalLunarDays;
++(bool) getYearPointer:(nullable NSInteger *) yearPointer monthPointer:(nullable NSInteger *) monthPointer dayPointer:(nullable NSInteger *) dayPointer totalLunarDays:(NSInteger) totalLunarDays;
 /**
  根据朔日推算对应的农历时间
  */
-+(bool) getLunarYearPointer:(NSInteger * _Nullable) lunarYearPointer lunarMonthPointer:(NSInteger * _Nullable) lunarMonthPointer lunarDayPointer:(NSInteger * _Nullable) lunarDayPointer totalLunarDays:(NSInteger)totalLunarDays;
++(bool) getLunarYearPointer:(nullable NSInteger *) lunarYearPointer lunarMonthPointer:(nullable NSInteger *) lunarMonthPointer lunarDayPointer:(nullable NSInteger *) lunarDayPointer totalLunarDays:(NSInteger)totalLunarDays;
 /**
  公历日期朔日
  */

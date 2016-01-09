@@ -108,11 +108,11 @@
         return false;
     }
     
+    (*touchDataPointer).touchEnd = [touch locationInView:touch.view];
     NSInteger xIndex;
     NSInteger yIndex;
     [self.class toucheGetXIndexPointer:&xIndex yIndexPointer:&yIndex touchPoint:(*touchDataPointer).touchEnd sizeScan:CGSizeMake(pointScan2.x, pointScan2.y) dateShow:dateShow];
     (*touchDataPointer).pointEnd = PYPointMake(xIndex, yIndex);
-    (*touchDataPointer).touchEnd = [touch locationInView:touch.view];
     if (IOS9_OR_LATER) {
         (*touchDataPointer).force.curForce = touch.force;
         (*touchDataPointer).force.maxForce = MAX((*touchDataPointer).force.maxForce, touch.force);
@@ -280,6 +280,12 @@
  是否触摸移动
  */
 +(BOOL) isTouchMoveWithTouchData:(nonnull PYCalendarTouchData *) touchDataPointer{
+    if ((*touchDataPointer).touchBegin.x == -1
+        || (*touchDataPointer).touchBegin.y == -1
+        || (*touchDataPointer).touchEnd.x == -1
+        || (*touchDataPointer).touchEnd.y == -1) {
+        return false;
+    }
     if (ABS((*touchDataPointer).touchBegin.x - (*touchDataPointer).touchEnd.x) < 2 && ABS((*touchDataPointer).touchBegin.y - (*touchDataPointer).touchEnd.y) < 2) {
         return false;
     }

@@ -86,6 +86,7 @@ extern const NSString * _Nonnull PYCalendarColorStyleLine;
 @property (nonatomic, strong) UIColor * _Nullable colorDay;
 @property (nonatomic, strong) UIColor * _Nullable colorOutDay;
 @property (nonatomic, strong) UIColor * _Nullable colorLunarDay;
+
 @property (nonatomic, strong) UIColor * _Nullable colorHighlight;
 @property (nonatomic, strong) UIColor * _Nullable colorDisable;
 
@@ -97,10 +98,10 @@ extern const NSString * _Nonnull PYCalendarColorStyleLine;
 @property (nonatomic) CGFloat fontWeekEndHeight;
 @property (nonatomic) CGFloat fontDayHeight;
 @property (nonatomic) CGFloat fontLunarDayHeight;
--(PYSolarTerm * _Nonnull) getSolarTermsWithYear:(NSInteger) year;
--(void) setAttributes:(NSDictionary<NSString *, id> * _Nonnull) attributes;
--(void) setAttributeWithKey:(NSString * _Nonnull) key value:(id _Nonnull) value;
--(id _Nullable) getAttributeValueWithKey:(NSString * _Nonnull) key;
+-(nonnull PYSolarTerm *) getSolarTermsWithYear:(NSInteger) year;
+-(void) setAttributes:(nonnull NSDictionary<NSString *, id> *) attributes;
+-(void) setAttributeWithKey:(NSString * _Nonnull) key value:(nonnull id) value;
+-(nonnull id) getAttributeValueWithKey:(nonnull NSString *) key;
 
 @end
 

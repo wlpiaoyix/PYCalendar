@@ -50,7 +50,7 @@ UIColor *PYCalendarGradientColor3;
         x += rect.size.width;
     }
 }
-+(void) drawSpeciallyWithContext:(nonnull CGContextRef) context text:(nonnull NSString *) text font:(nonnull UIFont *) font color:(UIColor * _Nonnull) color absRect:(CGRect) absRect y:(CGFloat) y {
++(void) drawSpeciallyWithContext:(nonnull CGContextRef) context text:(nonnull NSString *) text font:(nonnull UIFont *) font color:(nonnull UIColor *) color absRect:(CGRect) absRect y:(CGFloat) y {
     
     CGFloat borderWith = 1;
     CGFloat offsetValue = 0;
@@ -67,7 +67,7 @@ UIColor *PYCalendarGradientColor3;
     
     CGFloat radius = rectText.size.height * .4;
     CGFloat offsetPointerx = 3;
-    CGPoint centerPointer1 = CGPointMake(rectText.origin.x + offsetPointerx, y - (rectText.origin.y + rectText.size.height * .5) + font.pointSize * .1);
+    CGPoint centerPointer1 = CGPointMake(rectText.origin.x + offsetPointerx, y - (rectText.origin.y + rectText.size.height * .5) + font.pointSize * .2);
     [PYGraphicsDraw drawCircleWithContext:context pointCenter:centerPointer1 radius:radius strokeColor:[color CGColor] fillColor:nil strokeWidth:borderWith startDegree:90 endDegree:270];
     CGPoint centerPointer2 = CGPointMake(centerPointer1.x - offsetPointerx * 2 + textWith, centerPointer1.y);
     [PYGraphicsDraw drawCircleWithContext:context pointCenter:centerPointer2 radius:radius strokeColor:[color CGColor] fillColor:nil strokeWidth:borderWith startDegree:270 endDegree:90];
@@ -79,7 +79,7 @@ UIColor *PYCalendarGradientColor3;
     endPoint.y = startPoint.y;
     [PYGraphicsDraw drawLineWithContext:context startPoint:startPoint endPoint:endPoint strokeColor:[color CGColor] strokeWidth:borderWith lengthPointer:nil length:0];
 }
-+(void) drawDayWithContext:(nonnull CGContextRef) context font:(nonnull UIFont *) font fontHeight:(CGFloat) fontHeight color:(nonnull UIColor*) color lunarFont:(nonnull UIFont *) lunarFont lunarfontHeight:(CGFloat) lunarfontHeight lunarColor:(nonnull UIColor*) lunarColor absRect:(CGRect) absRect relRect:(CGRect) relRect y:(CGFloat) y  date:(PYDate) date luanrDate:(PYSolarTerm) lunarDate textRect:(CGRect * _Nullable) textRectPointer{
++(void) drawDayWithContext:(nonnull CGContextRef) context font:(nonnull UIFont *) font fontHeight:(CGFloat) fontHeight color:(nonnull UIColor*) color lunarFont:(nonnull UIFont *) lunarFont lunarfontHeight:(CGFloat) lunarfontHeight lunarColor:(nonnull UIColor*) lunarColor absRect:(CGRect) absRect relRect:(CGRect) relRect y:(CGFloat) y  date:(PYDate) date luanrDate:(PYSolarTerm) lunarDate textRect:(nullable CGRect *) textRectPointer{
     
     CGRect rect = CGRectNull;
     rect.origin.x = absRect.origin.x + relRect.origin.x;
@@ -124,13 +124,13 @@ UIColor *PYCalendarGradientColor3;
 }
 
 
-+(void) drawCalendarWithContext:(nonnull CGContextRef) context size:(CGSize) size dateShow:(NSDate *  _Nonnull) dateShow dateMin:(nonnull NSDate *) dateMin dateMax:(nonnull NSDate *) dateMax styleContext:(nonnull PYCalendarStyleContext *) styleContext{
++(CGSize) drawCalendarWithContext:(nonnull CGContextRef) context size:(CGSize) size dateShow:(nonnull NSDate *) dateShow dateMin:(nonnull NSDate *) dateMin dateMax:(nonnull NSDate *) dateMax styleContext:(nonnull PYCalendarStyleContext *) styleContext{
     CGFloat weekEndInfoHeight = 0;
     NSUInteger numWeekends = 0;
     CGFloat dayInfoHeight= 0;
     
     if (![self getDateValueWithHeight:size.height date:dateShow weekEndInfoHeightPointer:&weekEndInfoHeight numWeekendsPointer:&numWeekends dayInfoHeightPointer:&dayInfoHeight]) {
-        return;
+        return CGSizeMake(-1, -1);
     }
     
     [PYCalendarGraphicsTools drawWeekEndWithContext:context font:styleContext.fontWeekEnd color:styleContext.colorWeekEnd absRect:CGRectMake(0, 0, size.width, weekEndInfoHeight) y:size.height];
@@ -144,6 +144,7 @@ UIColor *PYCalendarGradientColor3;
     @weakify(styleContext);
     __block CGSize blocksize = size;
     __block BOOL flagDisable = true;
+    __block CGRect block_sizeDayText = CGRectMake(-1, -1, -1, -1);
     [PYCalendarTools blockIterater:^(NSInteger row, NSInteger align, PYDate date, PYDate dateMin, PYDate dateMax) {
         @strongify(styleContext)
         
@@ -216,7 +217,8 @@ UIColor *PYCalendarGradientColor3;
         }
         
         __block CGSize block_blocksize = blocksize;
-        [PYCalendarGraphicsTools drawDayWithContext:blockCtx font:fontDay fontHeight:fontHeight color:color lunarFont:lunarFont lunarfontHeight:lunarfontHeight lunarColor:lunarColor absRect:r1 relRect:r2 y:blocksize.height date:PYDateMake(date.year, date.month, date.day) luanrDate:lunarSt textRect:nil];
+        
+        [PYCalendarGraphicsTools drawDayWithContext:blockCtx font:fontDay fontHeight:fontHeight color:color lunarFont:lunarFont lunarfontHeight:lunarfontHeight lunarColor:lunarColor absRect:r1 relRect:r2 y:blocksize.height date:PYDateMake(date.year, date.month, date.day) luanrDate:lunarSt textRect:&block_sizeDayText];
         if (styleContext.today.year == date.year && styleContext.today.month == date.month && styleContext.today.day == date.day) {
             UIColor *colorToday;
             if (!flagDisable) {
@@ -230,6 +232,7 @@ UIColor *PYCalendarGradientColor3;
             [PYCalendarGraphicsTools drawSpeciallyWithContext:blockCtx text:text font:font color:colorToday absRect:r1 y:block_blocksize.height];
         }
     } date:dateShow dateMin:dateMin dateMax:dateMax];
+    return block_sizeDayText.size;
 }
 
 +(void) drawStyleWithContext:(nonnull CGContextRef) context size:(CGSize) size dateShow:(NSDate *  _Nonnull) dateShow styleContext:(nonnull PYCalendarStyleContext *) styleContext{
@@ -248,7 +251,7 @@ UIColor *PYCalendarGradientColor3;
     CGPoint p1 = CGPointMake(0, 0);
     CGPoint p4 = CGPointMake(p1.x , p1.y + endPoint.y);
     [PYGraphicsDraw drawLinearGradientWithContext:context colorValues:(CGFloat[]){
-        styleContext.colorStyleLine .red, styleContext.colorStyleLine.green, styleContext.colorStyleLine.blue, styleContext.colorStyleLine.alpha,
+        styleContext.colorStyleLine.red, styleContext.colorStyleLine.green, styleContext.colorStyleLine.blue, styleContext.colorStyleLine.alpha,
         0,0,0,0,
         styleContext.colorStyleLine.red, styleContext.colorStyleLine.green, styleContext.colorStyleLine.blue, styleContext.colorStyleLine.alpha
     } alphas:(CGFloat[]){
@@ -266,8 +269,7 @@ UIColor *PYCalendarGradientColor3;
     }
 }
 
-
-+(BOOL) getDateValueWithHeight:(CGFloat) height date:(NSDate *) date weekEndInfoHeightPointer:(CGFloat *) weekEndInfoHeightPointer numWeekendsPointer:(NSUInteger *) numWeekendsPointer dayInfoHeightPointer:(CGFloat *) dayInfoHeightPointer {
++(BOOL) getDateValueWithHeight:(CGFloat) height date:(nonnull NSDate *) date weekEndInfoHeightPointer:(nullable CGFloat *) weekEndInfoHeightPointer numWeekendsPointer:(nullable NSUInteger *) numWeekendsPointer dayInfoHeightPointer:(nullable CGFloat *) dayInfoHeightPointer {
     
     if (!date) {
         return false;
@@ -295,7 +297,7 @@ UIColor *PYCalendarGradientColor3;
     return true;
 }
 
-+(BOOL) isEnableDate:(PYDate * _Nonnull) date maxDate:(PYDate * _Nonnull) maxDate minDate:(PYDate  * _Nonnull) minDate canChangeDate:(BOOL) canChangeDate{
++(BOOL) isEnableDate:(nonnull PYDate *) date maxDate:(nonnull PYDate *) maxDate minDate:(nonnull PYDate *) minDate canChangeDate:(BOOL) canChangeDate{
     if (PYDateIsMaxEqulesMin(date, minDate) == -1) {
         if (canChangeDate) {
             *date = *minDate;

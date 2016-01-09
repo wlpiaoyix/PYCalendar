@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "081495991880FED8170865CBAE3F879BE873A6DF",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "081495991880FED8170865CBAE3F879BE873A6DF" : 0,
+    "80707EE409456469DC274FF07AB4C2C59A5F8F4F" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "3C086C65-F197-4B30-8753-ED92539D60A6",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "081495991880FED8170865CBAE3F879BE873A6DF" : "PYCalendar\/",
+    "80707EE409456469DC274FF07AB4C2C59A5F8F4F" : "Utile\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "PYCalendar",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "PYCalendar.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/wlpiaoyix\/PYCalendar.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "081495991880FED8170865CBAE3F879BE873A6DF"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/wlpiaoyix\/Utile.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "80707EE409456469DC274FF07AB4C2C59A5F8F4F"
+    }
+  ]
+}

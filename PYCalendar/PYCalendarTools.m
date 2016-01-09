@@ -216,33 +216,58 @@ const unsigned int CalendarLeapYearInfo[12] = {31,29,31,30,31,30,31,31,30,31,30,
     }
 }
 
-+(PYPoint) parsetToPointWithDate:(nonnull NSDate *) _date_ dateShow:(nonnull NSDate *) dateShow isStart:(BOOL) isStart{
++(BOOL) parsetToPointWithDate:(nonnull NSDate *) date dateShow:(nonnull NSDate *) dateShow isStart:(BOOL) isStart point:(nonnull PYPoint *) pointPointer{
     
     NSInteger perNumDays;
     NSInteger curNumDays;
     NSInteger nextNumDays;
     [PYCalendarTools getCalendarInfoWithPerNumDaysPointer:&perNumDays curNumDaysPointer:&curNumDays nextNumDaysPointer:&nextNumDays date:dateShow];
     
-    NSDate *date = _date_;
     
     PYPoint point = PYPointMake(-1, -1);
-    [self checkDate:&date isStart:isStart dateShow:dateShow];
     
-    if (!date) {
-        return point;
+    NSUInteger year = date.year;
+    NSUInteger month = date.month;
+    NSUInteger day = date.day;
+    
+    NSUInteger numDaysInMonth = date.numDaysInMonth;
+    
+    NSUInteger yearShow = dateShow.year;
+    NSUInteger monthShow = dateShow.month;
+    
+    
+    NSInteger totalDayShow;
+    [PYCalendarTools getTotalDaysPointer:&totalDayShow year:year month:month];
+    totalDayShow += day - 1;
+    if (isStart) {
+        NSInteger totalDay;
+        [PYCalendarTools getTotalDaysPointer:&totalDay year:yearShow month:monthShow];
+        totalDay += curNumDays + nextNumDays - 1;
+        if (totalDayShow > totalDay) {
+            return false;
+        }
+    }else{
+        NSInteger totalDay;
+        [PYCalendarTools getTotalDaysPointer:&totalDay year:yearShow month:monthShow];
+        totalDay -= perNumDays;
+        if (totalDayShow < totalDay) {
+            return false;
+        }
+        
     }
     
-    if ((date.year == dateShow.year && date.month + 1 == dateShow.month) || (date.year + 1 == dateShow.year && dateShow.month == 1 && date.month == 12)) {
+    if ((year == yearShow && month + 1 == monthShow) || (year + 1 == yearShow && monthShow == 1 && month == 12)) {
         point.y = 0;
-        point.x = perNumDays - (date.numDaysInMonth - date.day) - 1;
-    }else if(date.year == dateShow.year && date.month == dateShow.month){
-        point.y = (date.day + perNumDays - 1) / 7;
-        point.x = (date.day + perNumDays - 1) % 7;
-    }else if((date.year == dateShow.year && date.month - 1 == dateShow.month) || (date.year - 1 == dateShow.year && dateShow.month == 12 && date.month == 1)){
+        point.x = perNumDays - (numDaysInMonth - day) - 1;
+    }else if(year == yearShow && month == monthShow){
+        point.y = (day + perNumDays - 1) / 7;
+        point.x = (day + perNumDays - 1) % 7;
+    }else if((year == yearShow && month - 1 == monthShow) || (year - 1 == yearShow && monthShow == 12 && month == 1)){
         point.y = (perNumDays + curNumDays + nextNumDays) / 7 - 1;
-        point.x = date.day + (perNumDays + curNumDays)  % 7 - 1;
+        point.x = day + (perNumDays + curNumDays)  % 7 - 1;
     }
-    return point;
+    *pointPointer = point;
+    return true;
 }
 
 +(nonnull NSDate *) parsetToDateWithPoint:(PYPoint) point dateShow:(nonnull NSDate *) dateShow{
@@ -267,7 +292,7 @@ const unsigned int CalendarLeapYearInfo[12] = {31,29,31,30,31,30,31,31,30,31,30,
     
     return date;
 }
-+(void) getCalendarInfoWithPerNumDaysPointer:(NSInteger * _Nullable) perNumDaysPointer curNumDaysPointer:(NSInteger * _Nullable) curNumDaysPointer nextNumDaysPointer:(NSInteger * _Nullable) nextNumDaysPointer date:(nonnull const NSDate*) date{
++(void) getCalendarInfoWithPerNumDaysPointer:(nullable NSInteger *) perNumDaysPointer curNumDaysPointer:(nullable NSInteger *) curNumDaysPointer nextNumDaysPointer:(nullable NSInteger *) nextNumDaysPointer date:(nonnull const NSDate*) date{
     NSInteger firstWeekDay = date.firstWeekDayInMonth;
     
     NSInteger preNumDays = 0;
@@ -370,7 +395,7 @@ const unsigned int CalendarLeapYearInfo[12] = {31,29,31,30,31,30,31,31,30,31,30,
 /**
  通过朔日获取公历日期
  */
-+(bool) getYearPointer:(NSInteger * _Nullable) yearPointer monthPointer:(NSInteger * _Nullable) monthPointer dayPointer:(NSInteger * _Nullable) dayPointer totalLunarDays:(NSInteger) totalLunarDays{
++(bool) getYearPointer:(nullable NSInteger *) yearPointer monthPointer:(nullable NSInteger *) monthPointer dayPointer:(nullable NSInteger *) dayPointer totalLunarDays:(NSInteger) totalLunarDays{
     
     NSInteger _totalLunarDays = 0;
     for (NSInteger _year = PYCalendarToolsYearMin; _year <= PYCalendarToolsYearMax; _year++) {
@@ -406,7 +431,7 @@ const unsigned int CalendarLeapYearInfo[12] = {31,29,31,30,31,30,31,31,30,31,30,
 /**
  根据总天数推算对应的农历时间
  */
-+(bool) getLunarYearPointer:(NSInteger * _Nullable) lunarYearPointer lunarMonthPointer:(NSInteger * _Nullable) lunarMonthPointer lunarDayPointer:(NSInteger * _Nullable) lunarDayPointer totalLunarDays:(NSInteger)totalLunarDays{
++(bool) getLunarYearPointer:(nullable NSInteger *) lunarYearPointer lunarMonthPointer:(nullable NSInteger *) lunarMonthPointer lunarDayPointer:(nullable NSInteger *) lunarDayPointer totalLunarDays:(NSInteger)totalLunarDays{
     NSInteger lunarYear = 0;
     NSInteger lunarMonth = 0;
     NSInteger lunarDay = 0;

@@ -19,10 +19,13 @@
 #import <Utile/PYFrostedEffectView.h>
 #import <objc/runtime.h>
 #import <QuartzCore/QuartzCore.h>
+#import <Dialog/PYDailogTools.h>
+#import <Dialog/PYPopupTools.h>
 
 PYDate PYCalendarDateMax;
 PYDate PYCalendarDateMin;
 
+static NSUInteger MAXPointTouchLength = 10;
 
 @interface PYCalendarSelectedView : UIView
 
@@ -30,7 +33,12 @@ PYDate PYCalendarDateMin;
 
 @end
 
-@interface PYCalendarGraphicsView ()
+@interface PYCalendarGraphicsView (){
+@private
+    PYPoint pointTouchs[10];
+    NSUInteger pointTouchLength;
+    
+}
 
 @property (nonatomic, strong) PYCalendarStyleContext *styleContext;
 
@@ -39,7 +47,6 @@ PYDate PYCalendarDateMin;
 @property (nonatomic, strong) PYGraphicsThumb *gtPainter;
 
 @property (nonatomic, strong) PYFrostedEffectView *feView;
-
 @property (nonatomic, strong) PYCalendarTouchTools *touchTools;
 
 @property (nonatomic) PYPoint pointEnableStart;
@@ -102,7 +109,7 @@ PYDate PYCalendarDateMin;
     self.gtCalendar = [PYGraphicsThumb graphicsThumbWithView:self block:^(CGContextRef ctx, id userInfo) {
         @strongify(self);
         [PYGraphicsDraw drawTextWithContext:ctx attribute:[NSMutableAttributedString new] rect:self.bounds y:self.bounds.size.height scaleFlag:YES];
-        [PYCalendarGraphicsTools drawCalendarWithContext:ctx size:self.frameSize dateShow:self.dateShow dateMin:self.dateMin dateMax:self.dateMax styleContext:self.styleContext];
+        _sizeDayText = [PYCalendarGraphicsTools drawCalendarWithContext:ctx size:self.frameSize dateShow:self.dateShow dateMin:self.dateMin dateMax:self.dateMax styleContext:self.styleContext];
     }];
     self.gtStyle = [PYGraphicsThumb graphicsThumbWithView:self block:^(CGContextRef ctx, id userInfo) {
         @strongify(self);
@@ -209,13 +216,22 @@ PYDate PYCalendarDateMin;
     }
 }
 -(void) setDateSelecteds:(NSArray<NSDate *> *)dateSelecteds{
+    if ([dateSelecteds count] > MAXPointTouchLength) {
+        UIView *view = [UIView new];
+        [PYDailogTools setTitle:@"温馨提示" targetView:view];
+        [PYDailogTools setMessage:[NSString stringWithFormat:@"单次最多支持%d个时间段的选择",(int)MAXPointTouchLength/2] blockStyle:nil targetView:view];
+        [PYDailogTools showWithTargetView:view block:^(UIView * _Nonnull view, NSUInteger index) {
+            [PYPopupTools hiddenWithTargetView:view];
+        } buttonNames:@[@"确定"]];
+    }else{
+        _dateSelecteds = dateSelecteds;
+    }
     
-    _dateSelecteds = dateSelecteds;
     
     [self.touchTools clearData];
     
     [self.gtPainter executDisplay:nil];
-    if (![dateSelecteds count]) {
+    if (![self.dateSelecteds count]) {
         return;
     }
     
@@ -224,7 +240,8 @@ PYDate PYCalendarDateMin;
     
     NSDate *start = nil;
     NSDate *end = nil;
-    for (NSDate *date in dateSelecteds) {
+    NSUInteger index = 0;
+    for (NSDate *date in self.dateSelecteds) {
         if (start == nil) {
             start = date;
         }else{
@@ -255,15 +272,29 @@ PYDate PYCalendarDateMin;
             PYPoint pointBegin = PYPointMake(-1, -1);
             PYPoint pointEnd = PYPointMake(-1, -1);
             
-            pointBegin = [PYCalendarTools parsetToPointWithDate:start dateShow:self.dateShow isStart:YES];
-            pointEnd = [PYCalendarTools parsetToPointWithDate:end dateShow:self.dateShow isStart:NO];
+            if ([PYCalendarTools parsetToPointWithDate:start dateShow:self.dateShow isStart:YES point:&pointBegin]
+                && [PYCalendarTools parsetToPointWithDate:end dateShow:self.dateShow isStart:NO point:&pointEnd]) {
+                if (pointBegin.x == -1 || pointBegin.y == -1) {
+                    if (pointEnd.x != -1 && pointEnd.y != -1 ) {
+                        pointBegin.y = pointEnd.y;
+                        pointBegin.x = -2;
+                    }
+                }else if (pointEnd.x == -1 || pointEnd.y == -1) {
+                    if (pointBegin.x != -1 && pointBegin.y != -1 ) {
+                        pointEnd.y = pointBegin.y;
+                        pointEnd.x = 7;
+                    }
+                }
+            }
             
-            [self.gtPainter executDisplay:@{@"x1":@(pointBegin.x), @"y1":@(pointBegin.y), @"x2":@(pointEnd.x), @"y2":@(pointEnd.y)}];
-            
+            pointTouchs[index++] = pointBegin;
+            pointTouchs[index++] = pointEnd;
             start = nil;
             end = nil;
         }
     }
+    pointTouchLength = MIN(index, MAXPointTouchLength);
+    [self.gtPainter executDisplay:@""];
     
 }
 -(void) drawPainterWithContext:(nonnull CGContextRef) context userInfo:(NSDictionary<NSString *, NSNumber *>*) userInfo{
@@ -275,72 +306,77 @@ PYDate PYCalendarDateMin;
         return;
     }
     
-    CGFloat w = self.frameWidth / 7;
-    CGFloat g = dayInfoHeight * 2/3 ;
+    __block CGFloat w = self.frameWidth / 7;
+    __block CGFloat g = MAX(dayInfoHeight * 2/3, 30);
     
+    @weakify(self);
+    void (^blockDraw)(PYPoint begin, PYPoint end) = ^(PYPoint pointBegin, PYPoint pointEnd){
+        @strongify(self);
+        
+        PYPoint pointer1 = PYPointMake(-1, -1);
+        PYPoint pointer2 = PYPointMake(-1, -1);
+        
+        if (pointEnd.y < pointBegin.y || (pointEnd.y == pointBegin.y && pointEnd.x < pointBegin.x)) {
+            pointer2.x = pointBegin.x;
+            pointer2.y = pointBegin.y;
+            pointer1.x = pointEnd.x;
+            pointer1.y = pointEnd.y;
+        }else{
+            pointer1.x = pointBegin.x;
+            pointer1.y = pointBegin.y;
+            pointer2.x = pointEnd.x;
+            pointer2.y = pointEnd.y;
+            
+        }
+        if (pointer2.y > self.frameHeight) {
+            return;
+        }
+        
+        for (NSInteger i = pointer1.y ; i <= pointer2.y; i ++) {
+            if (pointer1.x  == -1 || pointer1.y  == -1 || pointer2.x == -1 || pointer2.y == -1) {
+                break;
+            }
+            CGPoint startPoint = CGPointMake(-1, -1);
+            CGPoint endPoint = CGPointMake(-1, -1);
+            startPoint.y = weekEndInfoHeight + i * dayInfoHeight + dayInfoHeight / 2;
+            endPoint.y = startPoint.y;
+            if (i == pointer1.y ) {
+                startPoint.x = w * pointer1.x + w/2;
+                if (i == pointer2.y) {
+                    endPoint.x = startPoint.x + (pointer2.x - pointer1.x ) * w;
+                }else{
+                    endPoint.x = self.frameWidth + w/2;
+                }
+            }else if (i == pointer2.y && i > pointer1.y ){
+                startPoint.x = -w/2;
+                endPoint.x = w/2 + pointer2.x * w;
+            }else if(i > pointer1.y  && i < pointer2.y){
+                startPoint.x = -w/2;
+                endPoint.x = self.frameWidth + w/2;
+            }
+            if (startPoint.x != -1 && endPoint.x != -1) {
+                [PYGraphicsDraw drawLineWithContext:context startPoint:startPoint endPoint:endPoint strokeColor:self.styleContext.colorPainterLine.CGColor strokeWidth:g lengthPointer:nil length:0];
+                [PYGraphicsDraw drawLineWithContext:context startPoint:startPoint endPoint:endPoint strokeColor:self.styleContext.colorHighlight.CGColor strokeWidth:g/4 lengthPointer:nil length:0];
+            }
+        }
+    };
     
-    PYPoint pointBegin = PYPointMake(-1, -1);
-    PYPoint pointEnd = PYPointMake(-1, -1);
     
     if (userInfo) {
-        pointBegin.x = [userInfo[@"x1"] integerValue];
-        pointBegin.y = [userInfo[@"y1"] integerValue];
-        pointEnd.x = [userInfo[@"x2"] integerValue];
-        pointEnd.y = [userInfo[@"y2"] integerValue];
+        NSUInteger index = 0;
+        while (index < pointTouchLength) {
+            PYPoint pointBegin = pointTouchs[index++];
+            PYPoint pointEnd = pointTouchs[index++];
+            blockDraw(pointBegin, pointEnd);
+        }
     }else{
         PYCalendarTouchData __touchData = self.touchTools.touchData;
         if ([PYCalendarTouchTools isNewTouchPointer:&__touchData]) {
             return;
         }
-        pointBegin = self.touchTools.touchData.pointBegin;
-        pointEnd = self.touchTools.touchData.pointEnd;
-    }
-    
-    PYPoint pointer1 = PYPointMake(-1, -1);
-    PYPoint pointer2 = PYPointMake(-1, -1);
-    
-    
-    if (pointEnd.y < pointBegin.y || (pointEnd.y == pointBegin.y && pointEnd.x < pointBegin.x)) {
-        pointer2.x = pointBegin.x;
-        pointer2.y = pointBegin.y;
-        pointer1.x = pointEnd.x;
-        pointer1.y = pointEnd.y;
-    }else{
-        pointer1.x = pointBegin.x;
-        pointer1.y = pointBegin.y;
-        pointer2.x = pointEnd.x;
-        pointer2.y = pointEnd.y;
-
-    }
-    if (pointer2.y > self.frameHeight) {
-        return;
-    }
-    
-    for (NSInteger i = pointer1.y ; i <= pointer2.y; i ++) {
-        if (pointer1.x  == -1 || pointer1.y  == -1 || pointer2.x == -1 || pointer2.y == -1) {
-            break;
-        }
-        CGPoint startPoint = CGPointMake(-1, -1);
-        CGPoint endPoint = CGPointMake(-1, -1);
-        startPoint.y = weekEndInfoHeight + i * dayInfoHeight + dayInfoHeight / 2;
-        endPoint.y = startPoint.y;
-        if (i == pointer1.y ) {
-            startPoint.x = w * pointer1.x + w/2;
-            if (i == pointer2.y) {
-                endPoint.x = startPoint.x + (pointer2.x - pointer1.x ) * w;
-            }else{
-                endPoint.x = self.frameWidth - w/2;
-            }
-        }else if (i == pointer2.y && i > pointer1.y ){
-            startPoint.x = w/2;
-            endPoint.x = startPoint.x + pointer2.x * w;
-        }else if(i > pointer1.y  && i < pointer2.y){
-            startPoint.x = w/2;
-            endPoint.x = self.frameWidth - w/2;
-        }
-        if (startPoint.x > 0 && endPoint.x > 0) {
-            [PYGraphicsDraw drawLineWithContext:context startPoint:startPoint endPoint:endPoint strokeColor:self.styleContext.colorPainterLine.CGColor strokeWidth:g lengthPointer:nil length:0];
-        }
+        PYPoint pointBegin = self.touchTools.touchData.pointBegin;
+        PYPoint pointEnd = self.touchTools.touchData.pointEnd;
+        blockDraw(pointBegin, pointEnd);
     }
     
 }
@@ -356,10 +392,17 @@ PYDate PYCalendarDateMin;
         
         PYPoint pointBegin = PYPointMake(0, 0);
         [PYCalendarTouchTools toucheGetXIndexPointer:&(pointBegin.x) yIndexPointer:&(pointBegin.y) touchPoint:[touch locationInView:touch.view] sizeScan:self.frameSize dateShow:self.dateShow];
-        if (!(pointBegin.x >= self.pointEnableStart.x && pointBegin.y >= self.pointEnableStart.y)) {
+        if (pointBegin.y < self.pointEnableStart.y){
             return;
         }
-        if (!(pointBegin.x <= self.pointEnableEnd.x && pointBegin.y <= self.pointEnableEnd.y)) {
+        if (pointBegin.y == self.pointEnableStart.y && pointBegin.x < self.pointEnableStart.x){
+            return;
+        }
+        
+        if (pointBegin.y > self.pointEnableEnd.y) {
+            return;
+        }
+        if (pointBegin.y == self.pointEnableEnd.y && pointBegin.x > self.pointEnableEnd.x) {
             return;
         }
         
@@ -411,8 +454,8 @@ PYDate PYCalendarDateMin;
             
             BOOL flagFore = true;
             if([self.touchTools isForeTouch1:&touchData]){
-                if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce1WithCalendar:)]) {
-                    flagFore = flagFore && [self.delegate touchForce1WithCalendar:self];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce1WithCalendar:touchPoint:)]) {
+                    flagFore = flagFore && [self.delegate touchForce1WithCalendar:self touchPoint:[touch locationInView:touch.view]];
                 }
                 if (flagFore) {
                     [self.feView removeFromSuperview];
@@ -422,8 +465,8 @@ PYDate PYCalendarDateMin;
                 }
             }
             if([self.touchTools isForeTouch2:&touchData]){
-                if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce2WithCalendar:)]) {
-                    flagFore = flagFore && [self.delegate touchForce2WithCalendar:self];
+                if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce2WithCalendar:touchPoint:)]) {
+                    flagFore = flagFore && [self.delegate touchForce2WithCalendar:self touchPoint:[touch locationInView:touch.view]];
                 }
             }
             
@@ -434,8 +477,8 @@ PYDate PYCalendarDateMin;
             }else{
                 [self.feView removeFromSuperview];
             }
-            if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce:calendar:)]) {
-                [self.delegate touchForce:value calendar:self];
+            if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce:calendar:touchPoint:)]) {
+                [self.delegate touchForce:value calendar:self touchPoint:[touch locationInView:touch.view]];
             }
         }
     }
@@ -510,13 +553,13 @@ PYDate PYCalendarDateMin;
     
 }
 
--(void) setAttributes:(NSDictionary<NSString *, id> * _Nonnull) attributes{
+-(void) setAttributes:(nonnull NSDictionary<NSString *, id> *) attributes{
     [self.styleContext setAttributes:attributes];
 }
--(void) setAttributeWithKey:(nonnull NSString *) key value:(id _Nonnull) value{
+-(void) setAttributeWithKey:(nonnull NSString *) key value:(nonnull id) value{
     [self.styleContext setAttributeWithKey:key value:value];
 }
--(id _Nullable) getAttributeValueWithKey:(nonnull NSString *) key{
+-(nonnull id) getAttributeValueWithKey:(nonnull NSString *) key{
     return [self.styleContext getAttributeValueWithKey:key];
 }
 

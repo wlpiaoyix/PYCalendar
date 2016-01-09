@@ -32,9 +32,9 @@ extern const NSString * _Nonnull PYColorMatrixCIVignetteEffect;
 +(UIImage * _Nonnull)imageWithSize:(CGSize) size blockDraw:(void (^ _Nonnull) (CGContextRef _Nonnull context, CGRect rect)) blockDraw;
 /*滤镜功能*/
 +(UIImage * _Nonnull) imageWithImage:(UIImage * _Nonnull)inImage colorMatrix:(NSString * _Nonnull) colorMatrix;
-+(UIImage * _Nonnull)imageWithImage:(UIImage * _Nonnull)inImage colorMatrix:(NSString * _Nonnull) colorMatrix rectMatrix:(CGRect) rectMatrix;
++(UIImage * _Nonnull) imageWithImage:(UIImage * _Nonnull)inImage colorMatrix:(NSString * _Nonnull) colorMatrix rectMatrix:(CGRect) rectMatrix;
 /**
  毛玻璃
  */
--(UIImage * _Nonnull) applyEffect:(CGFloat)blur;
+-(UIImage * _Nonnull) applyEffect:(CGFloat)blur tintColor:(nullable UIColor *) tintColor;
 @end
