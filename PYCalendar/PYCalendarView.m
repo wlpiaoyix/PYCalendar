@@ -17,7 +17,7 @@
 #import <Utile/PYGraphicsDraw.h>
 #import <Utile/PYFrostedEffectView.h>
 #import <Utile/EXTScope.h>
-#import <Dialog/Dialog.Framework.h>
+#import <PYInterchange/PYInterchange.framework.h>
 #import "PYCalendarTouchTools.h"
 #import "PYCalendarTools.h"
 #import "PYDatePikerView.h"
@@ -277,7 +277,7 @@ UIColor *PYCOPVDefaultColor2;
 }
 
 #pragma PYCalendarGraphicsProtocol ==>
--(void) dateSelcted:(NSDate * _Nullable) date calendar:(PYCalendarGraphicsView * _Nonnull) calendar{
+-(void) dateSelcted:(NSDate * _Nullable) date calendar:(nonnull PYCalendarGraphicsView *) calendar{
     if (self.blockSelectedDate) {
         _blockSelectedDate(self,date);
         if (date == calendar.dateSelected) {
@@ -287,15 +287,15 @@ UIColor *PYCOPVDefaultColor2;
         }
     }
 }
--(void) dateSelcteds:(NSArray<NSDate *> * _Nullable) dates calendar:(PYCalendarGraphicsView * _Nonnull) calendar{
+-(void) dateSelcteds:(NSArray<NSDate *> * _Nullable) dates calendar:(nonnull PYCalendarGraphicsView *) calendar{
     if (self.blockSelectedDates) {
         _blockSelectedDates(self, dates);
     }
 }
--(BOOL) touchForce1WithCalendar:(PYCalendarGraphicsView *)calendar touchPoint:(CGPoint)touchPoint{
+-(BOOL) touchForce1WithCalendar:(PYCalendarGraphicsView *)calendar touchData:(PYCalendarTouchData)touchData{
     return true;
 }
--(BOOL) touchForce2WithCalendar:(PYCalendarGraphicsView * _Nonnull) calendar touchPoint:(CGPoint)touchPoint{
+-(BOOL) touchForce2WithCalendar:(nonnull PYCalendarGraphicsView *) calendar touchData:(PYCalendarTouchData)touchData{
     self.feView.frameSize = self.frameSize;
     self.feView.frameOrigin = CGPointMake(0, 0);
     [self.feView removeFromSuperview];
@@ -303,7 +303,7 @@ UIColor *PYCOPVDefaultColor2;
     self.feView.effectValue = 0.5;
     [self.feView refreshForstedEffect];
     PYPoint point = PYPointMake(-1, -1);
-    [PYCalendarTouchTools toucheGetXIndexPointer:&point.x yIndexPointer:&point.y touchPoint:touchPoint sizeScan:self.calendarView.frameSize dateShow:self.calendarView.dateShow];
+    [PYCalendarTouchTools toucheGetXIndexPointer:&point.x yIndexPointer:&point.y touchPoint:touchData.touchEnd sizeScan:self.calendarView.frameSize dateShow:self.calendarView.dateShow];
     
     @weakify(self);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{

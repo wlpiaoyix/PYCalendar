@@ -19,8 +19,8 @@
 #import <Utile/PYFrostedEffectView.h>
 #import <objc/runtime.h>
 #import <QuartzCore/QuartzCore.h>
-#import <Dialog/PYDailogTools.h>
-#import <Dialog/PYPopupTools.h>
+#import <PYInterchange/PYDailogTools.h>
+#import <PYInterchange/PYPopupTools.h>
 
 PYDate PYCalendarDateMax;
 PYDate PYCalendarDateMin;
@@ -361,7 +361,6 @@ static NSUInteger MAXPointTouchLength = 10;
         }
     };
     
-    
     if (userInfo) {
         NSUInteger index = 0;
         while (index < pointTouchLength) {
@@ -417,7 +416,17 @@ static NSUInteger MAXPointTouchLength = 10;
             @weakify(self);
             dispatch_async(dispatch_get_main_queue(), ^{
                 @strongify(self);
+                
                 [self.gtPainter executDisplay:nil];
+                
+                BOOL flagLongResult = true;
+                if(self.delegate && [self.delegate respondsToSelector:@selector(touchLongWithCalendar:touchData:)]){
+                    flagLongResult = [self.delegate touchLongWithCalendar:self touchData:touchData];
+                }
+                
+                if (flagLongResult) {
+                    [PYUtile soundWithPath:nil isShake:YES];
+                }
             });
         }];
     }
@@ -444,42 +453,62 @@ static NSUInteger MAXPointTouchLength = 10;
         }
         
         if ([self.touchTools isLongTouch:&touchData]) {
+            
             if ([PYCalendarTouchTools isTouchMoveWithTouchData:&touchData]) {
-                flag = false;
+                
+                BOOL flagMoveResult = true;
+                if(self.delegate && [self.delegate respondsToSelector:@selector(touchMoveWithCalendar:touchData:)]){
+                    flagMoveResult = [self.delegate touchMoveWithCalendar:self touchData:touchData];
+                }
+                
+                if (flagMoveResult) {
+                    [self.gtPainter executDisplay:nil];
+                }
+
                 [self.touchTools synsetTouchData:touchData];
-                [self.gtPainter executDisplay:nil];
+                flag = false;
             }
+            
         }else if ([self.touchTools isForeTouch:&touchData]) {
-            flag = false;
             
             BOOL flagFore = true;
             if([self.touchTools isForeTouch1:&touchData]){
-                if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce1WithCalendar:touchPoint:)]) {
-                    flagFore = flagFore && [self.delegate touchForce1WithCalendar:self touchPoint:[touch locationInView:touch.view]];
+                
+                if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce1WithCalendar:touchData:)]) {
+                    flagFore = flagFore && [self.delegate touchForce1WithCalendar:self touchData:touchData];
                 }
+                
                 if (flagFore) {
                     [self.feView removeFromSuperview];
                     self.feView.frameSize = self.frameSize;
                     self.feView.frameOrigin = CGPointMake(0, 0);
                     [self addSubview:self.feView];
                 }
+                
             }
+            
             if([self.touchTools isForeTouch2:&touchData]){
-                if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce2WithCalendar:touchPoint:)]) {
-                    flagFore = flagFore && [self.delegate touchForce2WithCalendar:self touchPoint:[touch locationInView:touch.view]];
+                
+                if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce2WithCalendar:touchData:)]) {
+                    flagFore = flagFore && [self.delegate touchForce2WithCalendar:self touchData:touchData];
                 }
+                
             }
             
             CGFloat value =  touchData.force.curForce / touchData.force.maximumPossibleForce;
+            
             if (flagFore) {
                 self.feView.effectValue = value;
                 [self.feView refreshForstedEffect];
             }else{
                 [self.feView removeFromSuperview];
             }
-            if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce:calendar:touchPoint:)]) {
-                [self.delegate touchForce:value calendar:self touchPoint:[touch locationInView:touch.view]];
+            
+            if (self.delegate && [self.delegate respondsToSelector:@selector(touchForce:calendar:touchData:)]) {
+                [self.delegate touchForce:value calendar:self touchData:touchData];
             }
+            
+            flag = false;
         }
     }
     @finally {
@@ -504,20 +533,39 @@ static NSUInteger MAXPointTouchLength = 10;
         }
         
         if([self.touchTools isNormalTouch:&touchData]){
-            flag = false;
-            if (self.delegate
-                && [self.delegate respondsToSelector:@selector(dateSelcted:calendar:)]) {
-                [self.delegate dateSelcted:[PYCalendarTools parsetToDateWithPoint:touchData.pointEnd dateShow:self.dateShow] calendar:self];
+            
+            if (self.delegate) {
+                
+                BOOL flagTouchNormal = true;
+                if ([self.delegate respondsToSelector:@selector(touchNormalWithCalendar:touchData:)]) {
+                    flagTouchNormal = [self.delegate touchNormalWithCalendar:self touchData:touchData];
+                }
+                if (flagTouchNormal && [self.delegate respondsToSelector:@selector(dateSelcted:calendar:)]) {
+                    [self.delegate dateSelcted:[PYCalendarTools parsetToDateWithPoint:touchData.pointEnd dateShow:self.dateShow] calendar:self];
+                }
+                
             }
+            
+            flag = false;
         }else if ([self.touchTools isLongTouch:&touchData]){
-            flag = false;
-            if (self.delegate
-                && [self.delegate respondsToSelector:@selector(dateSelcteds:calendar:)]) {
-                [self.touchTools synsetTouchData:touchData];
-                NSDate *start = [PYCalendarTools parsetToDateWithPoint:self.touchTools.touchData.pointBegin dateShow:self.dateShow];
-                NSDate *end = [PYCalendarTools parsetToDateWithPoint:self.touchTools.touchData.pointEnd dateShow:self.dateShow];
-                [self.delegate dateSelcteds:@[start, end] calendar:self];
+            
+            if (self.delegate) {
+                
+                BOOL flagTouchLongEnd = true;
+                if ([self.delegate respondsToSelector:@selector(touchUpLongWithCalendar:touchData:)]) {
+                    flagTouchLongEnd = [self.delegate touchUpLongWithCalendar:self touchData:touchData];
+                }
+                
+                if (flagTouchLongEnd && [self.delegate respondsToSelector:@selector(dateSelcteds:calendar:)]) {
+                    [self.touchTools synsetTouchData:touchData];
+                    NSDate *start = [PYCalendarTools parsetToDateWithPoint:self.touchTools.touchData.pointBegin dateShow:self.dateShow];
+                    NSDate *end = [PYCalendarTools parsetToDateWithPoint:self.touchTools.touchData.pointEnd dateShow:self.dateShow];
+                    [self.delegate dateSelcteds:@[start, end] calendar:self];
+                }
+                
             }
+            
+            flag = false;
         }
         
     }

@@ -10,55 +10,6 @@
 #import "PYCalendarParams.h"
 
 
-typedef struct _PYForce {
-    CGFloat curForce,maxForce,maximumPossibleForce;
-} PYForce;
-
-PYUTILE_STATIC_INLINE PYForce PYForceNull(){
-    PYForce force = { -1, -1, -1};
-    return force;
-}
-
-
-typedef enum : NSInteger{
-    PYCalendarTouchUnknow = -1,
-    PYCalendarTouchBegin = 0,
-    PYCalendarTouchMove = 1,
-    PYCalendarTouchEnd = 2
-} PYCalendarTouchStatus;
-
-typedef enum : NSInteger{
-    PYCalendarTouchInValid = -1,
-    PYCalendarTouchNormal = 0,
-    PYCalendarTouchLong = 1,
-    PYCalendarTouchFore1 = 2,
-    PYCalendarTouchFore2 = 3
-} PYCalendarTouchType;
-
-typedef struct _PYCalendarTouchData {
-    PYPoint pointBegin;
-    PYPoint pointEnd;
-    
-    CGPoint touchBegin;
-    CGPoint touchEnd;
-    
-    PYForce force;
-    
-    PYCalendarTouchStatus status;
-    PYCalendarTouchType type;
-    
-} PYCalendarTouchData;
-
-PYUTILE_STATIC_INLINE PYCalendarTouchData PYCalendarTouchDataNull(){
-    PYPoint p1 = {-1,-1};
-    PYPoint p2 = {-1,-1};
-    CGPoint p3 = {-1,-1};
-    CGPoint p4 = {-1,-1};
-    PYForce force = PYForceNull();
-    PYCalendarTouchData date = {p1, p2, p3, p4, force, PYCalendarTouchUnknow, PYCalendarTouchInValid};
-    return date;
-}
-
 @interface PYCalendarTouchTools : NSObject
 @property (nonatomic) CGFloat touchLongTime;
 @property (nonatomic) CGFloat touchForce1;

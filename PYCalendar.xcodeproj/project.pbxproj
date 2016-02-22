@@ -16,6 +16,7 @@
 		1509F9571BFD6370002BC32D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1509F9551BFD6370002BC32D /* LaunchScreen.storyboard */; };
 		1509F9651BFD68AB002BC32D /* Utile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1509F9641BFD68AB002BC32D /* Utile.framework */; };
 		155179011C253EFB00821104 /* PYCalendarTouchTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 155179001C253EFB00821104 /* PYCalendarTouchTools.m */; };
+		15632BC41C4CDA53006D3B09 /* PYInterchange.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15632BC31C4CDA53006D3B09 /* PYInterchange.framework */; };
 		159CC93E1C0403BC008BE683 /* NSDate+Lunar.m in Sources */ = {isa = PBXBuildFile; fileRef = 159CC93D1C0403BC008BE683 /* NSDate+Lunar.m */; };
 		15B704701C14099700B6B067 /* PYCalendarGraphicsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15B7046F1C14099700B6B067 /* PYCalendarGraphicsView.m */; };
 		15B704731C1409FB00B6B067 /* PYCalendarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15B704721C1409FB00B6B067 /* PYCalendarView.m */; };
@@ -23,7 +24,6 @@
 		15D0C4C61C0EA0C000B81F23 /* PYCalendarParams.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D0C4C51C0EA0C000B81F23 /* PYCalendarParams.m */; };
 		15D25FFF1C16C49A00D1623D /* PYCalendarSound.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 15D25FFE1C16C49A00D1623D /* PYCalendarSound.bundle */; };
 		15D260021C1811BC00D1623D /* PYDatePikerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 15D260011C1811BC00D1623D /* PYDatePikerView.m */; };
-		15D260061C18183400D1623D /* Dialog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15D260051C18183400D1623D /* Dialog.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +42,7 @@
 		1509F9641BFD68AB002BC32D /* Utile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Utile.framework; sourceTree = "<group>"; };
 		155178FF1C253EFB00821104 /* PYCalendarTouchTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PYCalendarTouchTools.h; sourceTree = "<group>"; };
 		155179001C253EFB00821104 /* PYCalendarTouchTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PYCalendarTouchTools.m; sourceTree = "<group>"; };
+		15632BC31C4CDA53006D3B09 /* PYInterchange.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PYInterchange.framework; sourceTree = "<group>"; };
 		159CC93C1C0403BC008BE683 /* NSDate+Lunar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Lunar.h"; sourceTree = "<group>"; };
 		159CC93D1C0403BC008BE683 /* NSDate+Lunar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Lunar.m"; sourceTree = "<group>"; };
 		15B7046E1C14099700B6B067 /* PYCalendarGraphicsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PYCalendarGraphicsView.h; sourceTree = "<group>"; };
@@ -55,7 +56,6 @@
 		15D25FFE1C16C49A00D1623D /* PYCalendarSound.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PYCalendarSound.bundle; sourceTree = "<group>"; };
 		15D260001C1811BC00D1623D /* PYDatePikerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PYDatePikerView.h; sourceTree = "<group>"; };
 		15D260011C1811BC00D1623D /* PYDatePikerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PYDatePikerView.m; sourceTree = "<group>"; };
-		15D260051C18183400D1623D /* Dialog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Dialog.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,7 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15D260061C18183400D1623D /* Dialog.framework in Frameworks */,
+				15632BC41C4CDA53006D3B09 /* PYInterchange.framework in Frameworks */,
 				1509F9651BFD68AB002BC32D /* Utile.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,7 +74,7 @@
 		1509F93B1BFD6370002BC32D = {
 			isa = PBXGroup;
 			children = (
-				15D260051C18183400D1623D /* Dialog.framework */,
+				15632BC31C4CDA53006D3B09 /* PYInterchange.framework */,
 				15D25FFE1C16C49A00D1623D /* PYCalendarSound.bundle */,
 				1509F9641BFD68AB002BC32D /* Utile.framework */,
 				1509F9461BFD6370002BC32D /* PYCalendar */,
@@ -93,20 +93,20 @@
 		1509F9461BFD6370002BC32D /* PYCalendar */ = {
 			isa = PBXGroup;
 			children = (
-				15B704711C1409FB00B6B067 /* PYCalendarView.h */,
-				15B704721C1409FB00B6B067 /* PYCalendarView.m */,
 				15D0C4C41C0EA0C000B81F23 /* PYCalendarParams.h */,
 				15D0C4C51C0EA0C000B81F23 /* PYCalendarParams.m */,
-				150350551C02B1FC000A719B /* PYCalendarTools.h */,
-				150350561C02B1FC000A719B /* PYCalendarTools.m */,
+				159CC93C1C0403BC008BE683 /* NSDate+Lunar.h */,
+				159CC93D1C0403BC008BE683 /* NSDate+Lunar.m */,
+				15B704711C1409FB00B6B067 /* PYCalendarView.h */,
+				15B704721C1409FB00B6B067 /* PYCalendarView.m */,
 				15B7046E1C14099700B6B067 /* PYCalendarGraphicsView.h */,
 				15B7046F1C14099700B6B067 /* PYCalendarGraphicsView.m */,
+				150350551C02B1FC000A719B /* PYCalendarTools.h */,
+				150350561C02B1FC000A719B /* PYCalendarTools.m */,
 				15D0C4B81C0BF53500B81F23 /* PYCalendarGraphicsTools.h */,
 				15D0C4B91C0BF53500B81F23 /* PYCalendarGraphicsTools.m */,
 				155178FF1C253EFB00821104 /* PYCalendarTouchTools.h */,
 				155179001C253EFB00821104 /* PYCalendarTouchTools.m */,
-				159CC93C1C0403BC008BE683 /* NSDate+Lunar.h */,
-				159CC93D1C0403BC008BE683 /* NSDate+Lunar.m */,
 				1509F94A1BFD6370002BC32D /* AppDelegate.h */,
 				1509F94B1BFD6370002BC32D /* AppDelegate.m */,
 				1509F94D1BFD6370002BC32D /* ViewController.h */,

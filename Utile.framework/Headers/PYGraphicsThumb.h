@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void (^blockGraphicsLayerDraw)(CGContextRef ctx, id userInfo);
+typedef void (^blockGraphicsLayerDraw)(CGContextRef _Nonnull ctx, id _Nullable userInfo);
 
 @interface PYGraphicsThumb : NSObject
-+(instancetype) graphicsThumbWithView:(UIView*) view block:(blockGraphicsLayerDraw) block;
--(void) executDisplay:(id) userInfo;
++(nonnull instancetype) graphicsThumbWithView:(nonnull UIView*) view block:(nullable blockGraphicsLayerDraw) block;
+-(void) executDisplay:(nullable id) userInfo;
 @end

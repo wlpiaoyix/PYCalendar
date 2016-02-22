@@ -15,13 +15,17 @@
 @protocol PYCalendarGraphicsProtocol <NSObject>
 @optional
 //==>日期单选和多选
--(void) dateSelcted:(NSDate * _Nullable) date calendar:(PYCalendarGraphicsView * _Nonnull) calendar;
--(void) dateSelcteds:(NSArray<NSDate *> * _Nullable) dates calendar:(PYCalendarGraphicsView * _Nonnull) calendar;
+-(void) dateSelcted:(NSDate * _Nullable) date calendar:(nonnull PYCalendarGraphicsView *) calendar;
+-(void) dateSelcteds:(NSArray<NSDate *> * _Nullable) dates calendar:(nonnull PYCalendarGraphicsView *) calendar;
 //<==
+-(BOOL) touchMoveWithCalendar:(nonnull PYCalendarGraphicsView *) calendar touchData:(PYCalendarTouchData) touchData;
+-(BOOL) touchLongWithCalendar:(nonnull PYCalendarGraphicsView *) calendar touchData:(PYCalendarTouchData) touchData;
+-(BOOL) touchUpLongWithCalendar:(nonnull PYCalendarGraphicsView *) calendar touchData:(PYCalendarTouchData) touchData;
+-(BOOL) touchNormalWithCalendar:(nonnull PYCalendarGraphicsView *) calendar touchData:(PYCalendarTouchData) touchData;
 //==>Force touch
--(void) touchForce:(CGFloat) force calendar:(PYCalendarGraphicsView * _Nonnull) calendar touchPoint:(CGPoint) touchPoint;
--(BOOL) touchForce1WithCalendar:(PYCalendarGraphicsView * _Nonnull) calendar touchPoint:(CGPoint) touchPoint;
--(BOOL) touchForce2WithCalendar:(PYCalendarGraphicsView * _Nonnull) calendar touchPoint:(CGPoint) touchPoint;
+-(void) touchForce:(CGFloat) force calendar:(nonnull PYCalendarGraphicsView *) calendar touchData:(PYCalendarTouchData) touchData;
+-(BOOL) touchForce1WithCalendar:(nonnull PYCalendarGraphicsView *) calendar touchData:(PYCalendarTouchData) touchData;
+-(BOOL) touchForce2WithCalendar:(nonnull PYCalendarGraphicsView *) calendar touchData:(PYCalendarTouchData) touchData;
 //==>
 @end
 
