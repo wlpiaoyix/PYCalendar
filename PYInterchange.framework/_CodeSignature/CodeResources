@@ -4,53 +4,148 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Headers/PYDailogTools.h</key>
-		<data>
-		orBlgPX5tcsHgYEstDeXJ8FCWeI=
-		</data>
 		<key>Headers/PYInterchange.framework.h</key>
 		<data>
-		KvW02NREP1908nov+rv5ek7S41Q=
+		OwD6xv8EzsJZcVNX9Hvt9uxHlh8=
 		</data>
-		<key>Headers/PYPopupTools.h</key>
+		<key>Headers/PYPopupParams.h</key>
 		<data>
-		SSxnmsIKBJp1VIW8RzPnu07ubBM=
+		x4HGqfa48LJhRACVJ5sZ0sTPDXs=
 		</data>
 		<key>Headers/PYProgressView.h</key>
 		<data>
-		6vqlaO1GBQhDRM49MtTvcrGPmrg=
+		FRuIYa4RPj+o57fYjE5WWHv9NoA=
 		</data>
-		<key>Headers/PYToastTools.h</key>
+		<key>Headers/PYSheetView.h</key>
 		<data>
-		LVQYXM0tbECx38o3WD75Zu2GINU=
+		j79o9drHi0kgAqHPfhKljF6UJ7Y=
+		</data>
+		<key>Headers/UIView+Dialog.h</key>
+		<data>
+		zUaF7LyI4mb6G8XoYO17fbGHzog=
+		</data>
+		<key>Headers/UIView+LayerSwitch.h</key>
+		<data>
+		DMSiZWtyBI1uKBRjEXwHkXCAHNc=
+		</data>
+		<key>Headers/UIView+Popup.h</key>
+		<data>
+		bPC+PW9b2mkHWiN+uAuWaCrImjQ=
+		</data>
+		<key>Headers/UIView+Remove.h</key>
+		<data>
+		Gt/L287q7FsJKe8eXzY0d9ff2Lw=
+		</data>
+		<key>Headers/UIView+Sheet.h</key>
+		<data>
+		yL9i3dW+xLF9vRn/bXqQktoc6sM=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		XhU0h4C5FC9KOPgyeBiCCbEHI8s=
+		Zr4nkvBUu0oqyOptP7n4SCzeozI=
 		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Headers/PYDailogTools.h</key>
-		<data>
-		orBlgPX5tcsHgYEstDeXJ8FCWeI=
-		</data>
 		<key>Headers/PYInterchange.framework.h</key>
-		<data>
-		KvW02NREP1908nov+rv5ek7S41Q=
-		</data>
-		<key>Headers/PYPopupTools.h</key>
-		<data>
-		SSxnmsIKBJp1VIW8RzPnu07ubBM=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			OwD6xv8EzsJZcVNX9Hvt9uxHlh8=
+			</data>
+			<key>hash2</key>
+			<data>
+			LvpQ6TAKtS83Wrn0yI0/93vdF7b9jw9a6XztjydfNKc=
+			</data>
+		</dict>
+		<key>Headers/PYPopupParams.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			x4HGqfa48LJhRACVJ5sZ0sTPDXs=
+			</data>
+			<key>hash2</key>
+			<data>
+			Vj2j7d2juZByRyqKtAjNBYI4zXLy8xeortrppMsHuC0=
+			</data>
+		</dict>
 		<key>Headers/PYProgressView.h</key>
-		<data>
-		6vqlaO1GBQhDRM49MtTvcrGPmrg=
-		</data>
-		<key>Headers/PYToastTools.h</key>
-		<data>
-		LVQYXM0tbECx38o3WD75Zu2GINU=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			FRuIYa4RPj+o57fYjE5WWHv9NoA=
+			</data>
+			<key>hash2</key>
+			<data>
+			KsOy4I4K/i+G0Rpar63BZoGyTVXQdHGgP22pvvPOmAg=
+			</data>
+		</dict>
+		<key>Headers/PYSheetView.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			j79o9drHi0kgAqHPfhKljF6UJ7Y=
+			</data>
+			<key>hash2</key>
+			<data>
+			ZIUBx8UQsgyrB1uidVzNAI9nh81Pvdchssc6psgj75Y=
+			</data>
+		</dict>
+		<key>Headers/UIView+Dialog.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			zUaF7LyI4mb6G8XoYO17fbGHzog=
+			</data>
+			<key>hash2</key>
+			<data>
+			lwfpm5qdl0eEbMtWp/kOshvVXJ2C0N7WSYFtLEN71fw=
+			</data>
+		</dict>
+		<key>Headers/UIView+LayerSwitch.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			DMSiZWtyBI1uKBRjEXwHkXCAHNc=
+			</data>
+			<key>hash2</key>
+			<data>
+			FONxfIie/3FI59iJdpOwAWMzAA/Mpo8Rqs/SVFTpJH0=
+			</data>
+		</dict>
+		<key>Headers/UIView+Popup.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			bPC+PW9b2mkHWiN+uAuWaCrImjQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			wlmvB1dfatA/z+a/QCZdPw81axbf40yli5+gKeb/UKs=
+			</data>
+		</dict>
+		<key>Headers/UIView+Remove.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			Gt/L287q7FsJKe8eXzY0d9ff2Lw=
+			</data>
+			<key>hash2</key>
+			<data>
+			7OQnOXzF/2XvJDhvQo1E3y36yUf8wZykTFifs37egPc=
+			</data>
+		</dict>
+		<key>Headers/UIView+Sheet.h</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			yL9i3dW+xLF9vRn/bXqQktoc6sM=
+			</data>
+			<key>hash2</key>
+			<data>
+			X/ErBTtp4MGAGajXXprvqpnEuW3ta67/77eEbU61sbs=
+			</data>
+		</dict>
 	</dict>
 	<key>rules</key>
 	<dict>

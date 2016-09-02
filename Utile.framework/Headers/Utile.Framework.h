@@ -19,10 +19,12 @@ FOUNDATION_EXPORT const unsigned char Utile_FrameworkVersionString[];
 #import "PYKeyboardNotification.h"
 #import "PYRegexPredicate.h"
 #import "PYReflect.h"
+
 #import "PYHook.h"
 
 #import "PYOrientationListener.h"
 #import "PYReachabilityListener.h"
+#import "PYMotionListener.h"
 
 #import "NSDate+Expand.h"
 #import "NSNumber+Expand.h"
@@ -43,6 +45,11 @@ FOUNDATION_EXPORT const unsigned char Utile_FrameworkVersionString[];
 
 #import "PYFrostedEffectView.h"
 
+#import "UIViewController+Hook.h"
+#import "UIViewController+HookView.h"
+#import "UIViewController+HookOrientation.h"
+
 #import "EXTScope.h"
+
 
 

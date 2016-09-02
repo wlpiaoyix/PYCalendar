@@ -19,8 +19,8 @@
 #import <Utile/PYFrostedEffectView.h>
 #import <objc/runtime.h>
 #import <QuartzCore/QuartzCore.h>
-#import <PYInterchange/PYDailogTools.h>
-#import <PYInterchange/PYPopupTools.h>
+#import <PYInterchange/UIView+Dialog.h>
+#import <PYInterchange/UIView+Popup.h>
 
 PYDate PYCalendarDateMax;
 PYDate PYCalendarDateMin;
@@ -218,10 +218,10 @@ static NSUInteger MAXPointTouchLength = 10;
 -(void) setDateSelecteds:(NSArray<NSDate *> *)dateSelecteds{
     if ([dateSelecteds count] > MAXPointTouchLength) {
         UIView *view = [UIView new];
-        [PYDailogTools setTitle:@"温馨提示" targetView:view];
-        [PYDailogTools setMessage:[NSString stringWithFormat:@"单次最多支持%d个时间段的选择",(int)MAXPointTouchLength/2] blockStyle:nil targetView:view];
-        [PYDailogTools showWithTargetView:view block:^(UIView * _Nonnull view, NSUInteger index) {
-            [PYPopupTools hiddenWithTargetView:view];
+        view.dialogTitle = @"温馨提示";
+        [view setDialogMessage:[NSString stringWithFormat:@"单次最多支持%d个时间段的选择",(int)MAXPointTouchLength/2]];
+        [view dialogShowWithBlock:^(UIView * _Nonnull view, NSUInteger index) {
+            [view dialogHidden];
         } buttonNames:@[@"确定"]];
     }else{
         _dateSelecteds = dateSelecteds;
@@ -484,7 +484,6 @@ static NSUInteger MAXPointTouchLength = 10;
                     self.feView.frameOrigin = CGPointMake(0, 0);
                     [self addSubview:self.feView];
                 }
-                
             }
             
             if([self.touchTools isForeTouch2:&touchData]){
@@ -499,7 +498,7 @@ static NSUInteger MAXPointTouchLength = 10;
             
             if (flagFore) {
                 self.feView.effectValue = value;
-                [self.feView refreshForstedEffect];
+                [self.feView refreshImage];
             }else{
                 [self.feView removeFromSuperview];
             }

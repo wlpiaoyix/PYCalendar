@@ -12,6 +12,7 @@
 #import <Utile/UIView+Expand.h>
 #import <Utile/NSDate+Expand.h>
 #import "NSDate+Lunar.h"
+#import <Utile/PYViewAutolayoutCenter.h>
 NSInteger PYDatePickerMaxRow = 9999;
 NSInteger PYDatePickerMaxYear = 2099;
 NSInteger PYDatePickerMinYear = 1901;
@@ -45,11 +46,11 @@ NSInteger PYDatePickerWith = 220;
     self.pikerDate.delegate = self;
     self.pikerDate.dataSource = self;
     self.pikerDate.frameWidth = PYDatePickerWith;
-    self.frameSize = CGSizeMake(PYDatePickerWith, 180);
+    self.frameSize = CGSizeMake(PYDatePickerWith, 160);
     [self addSubview:self.pikerDate];
+    [PYViewAutolayoutCenter persistConstraint:self.pikerDate relationmargins:UIEdgeInsetsMake(0, 0, 0, 0) relationToItems:PYEdgeInsetsItemNull()];
     self.selectedDate = [NSDate date];
 }
-
 
 // returns the number of 'columns' to display.
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{

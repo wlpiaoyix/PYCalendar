@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>PYCalendar.framework.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 		<key>PYCalendar.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -15,6 +20,16 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>1509F9431BFD6370002BC32D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>157638871D30F683004A7552</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>157638901D30F684004A7552</key>
 		<dict>
 			<key>primary</key>
 			<true/>

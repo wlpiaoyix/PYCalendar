@@ -24,7 +24,7 @@
         self.synTouchData = [NSObject new];
         self.touchLongTime = .5;
         self.touchForce1 = 2.0;
-        self.touchForce2 = 4.0;
+        self.touchForce2 = 6.0;
         [self clearData];
     }
     return self;

@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import <Utile/Utile.Framework.h>
+#import "PYTimeView.h"
 
 @interface ViewController ()
 @property (strong, nonatomic) PYFrostedEffectView *forview;
@@ -18,6 +19,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    PYTimeView * tv = [PYTimeView new];
+//    [self.view addSubview:tv];
     // Do any additional setup after loading the view, typically from a nib
     self.forview = [[PYFrostedEffectView alloc] initWithFrame:CGRectMake(0, 300, 320, 320)];
 //    [self.view addSubview:self.forview];

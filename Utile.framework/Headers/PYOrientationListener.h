@@ -23,18 +23,33 @@
 @end
 @interface PYOrientationListener : NSObject
 //当前旋转方向
-@property(nonatomic,readonly) UIDeviceOrientation orientation;
+@property(nonatomic,readonly) UIDeviceOrientation deviceOrientation;
+//当前控制器方向
+@property(nonatomic,readonly) UIInterfaceOrientation interfaceOrientation;
 //旋转时间
-@property(nonatomic) float duration;
+@property(nonatomic) NSTimeInterval duration;
 +(nonnull instancetype) instanceSingle;
 /**
  旋转当前装置
  */
 -(void) attemptRotationToDeviceOrientation:(UIDeviceOrientation) deviceOrientation completion:(void (^ _Nullable)(void)) completion;
+-(void) addListener:(nonnull id<PYOrientationListener>) listener;
+-(void) removeListenser:(nonnull id<PYOrientationListener>) listener;
 /**
  是否支持旋转到当前方向
  */
--(BOOL) isSupportOrientation:(UIDeviceOrientation) orientation;
--(void) addListener:(nonnull id<PYOrientationListener>) listener;
--(void) removeListenser:(nonnull id<PYOrientationListener>) listener;
++(BOOL) isSupportDeviceOrientation:(UIDeviceOrientation) orientation;
+/**
+ 是否支持旋转到当前方向
+ */
++(BOOL) isSupportDeviceOrientation:(UIDeviceOrientation) orientation targetController:(nonnull UIViewController *) targetController;
+
+/**
+ 是否支持旋转到当前方向
+ */
++(BOOL) isSupportInterfaceOrientation:(UIInterfaceOrientation) interfaceOrientation targetController:(nonnull UIViewController *) targetController;
+/**
+ 是否支持旋转到当前方向
+ */
++(BOOL) isSupportInterfaceOrientationMask:(UIInterfaceOrientationMask) interfaceOrientationMask targetController:(nonnull UIViewController *) targetController;
 @end

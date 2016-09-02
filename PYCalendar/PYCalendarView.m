@@ -188,15 +188,14 @@ UIColor *PYCOPVDefaultColor2;
     self.timeInterval = -1;
     PYDatePikerView *picker = [PYDatePikerView new];
     picker.selectedDate = self.dateShow;
-    [PYDailogTools setTitle:@"日期调整" targetView:picker];
+    picker.dialogTitle = @"日期调整";
     @weakify(self);
-    [PYDailogTools showWithTargetView:picker block:^(UIView * _Nonnull view, NSUInteger index) {
+    [picker dialogShowWithBlock:^(UIView * _Nonnull view, NSUInteger index) {
         @strongify(self);
-        [PYPopupTools hiddenWithTargetView:view];
+        [view dialogHidden];
         if (index == 0) {
             self.dateShow = ((PYDatePikerView*)view).selectedDate;
         }
-        
     } buttonNames:@[@"确定",@"取消" ]];
 }
 
@@ -301,7 +300,7 @@ UIColor *PYCOPVDefaultColor2;
     [self.feView removeFromSuperview];
     [self addSubview:self.feView];
     self.feView.effectValue = 0.5;
-    [self.feView refreshForstedEffect];
+    [self.feView refreshImage];
     PYPoint point = PYPointMake(-1, -1);
     [PYCalendarTouchTools toucheGetXIndexPointer:&point.x yIndexPointer:&point.y touchPoint:touchData.touchEnd sizeScan:self.calendarView.frameSize dateShow:self.calendarView.dateShow];
     
